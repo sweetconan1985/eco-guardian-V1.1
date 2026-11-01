@@ -1,0 +1,1956 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eco-Guardian: ภารกิจ 12 ผู้พิทักษ์ระบบนิเวศ ม.3 (สสวท.)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Prompt & Kanit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700;800;900&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Prompt', 'sans-serif'],
+                        heading: ['Kanit', 'sans-serif'],
+                    },
+                    colors: {
+                        eco: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    },
+                    animation: {
+                        'shake': 'shake 0.4s ease-in-out',
+                        'float': 'float 3s ease-in-out infinite',
+                        'bounce-subtle': 'bounceSubtle 2s infinite ease-in-out',
+                    },
+                    keyframes: {
+                        shake: {
+                            '0%, 100%': { transform: 'translateX(0)' },
+                            '20%, 60%': { transform: 'translateX(-8px)' },
+                            '40%, 80%': { transform: 'translateX(8px)' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-8px)' }
+                        },
+                        bounceSubtle: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-5px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+            background: radial-gradient(circle at 50% 15%, #0f172a, #020617 90%);
+            color: #f8fafc;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .text-glow {
+            text-shadow: 0 0 15px rgba(34, 197, 94, 0.6);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 7px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #16a34a;
+            border-radius: 4px;
+        }
+        /* Printable Certificate Layout */
+        @media print {
+            @page {
+                size: A4 landscape;
+                margin: 0;
+            }
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            body * {
+                visibility: hidden;
+            }
+            #printable-certificate, #printable-certificate * {
+                visibility: visible;
+            }
+            #printable-certificate {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100vw;
+                height: 100vh;
+                margin: 0;
+                padding: 24px;
+                background: white !important;
+                color: #1e293b !important;
+                box-sizing: border-box;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between overflow-x-hidden">
+
+    <!-- Top Navigation Header -->
+    <header class="w-full bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50 px-4 py-2.5">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="app.showStageMap()">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                    <span class="text-xl">🌿</span>
+                </div>
+                <div>
+                    <h1 class="font-heading font-black text-sm md:text-base bg-clip-text text-transparent bg-gradient-to-r from-emerald-300 via-teal-200 to-cyan-300">
+                        ECO-GUARDIAN 12
+                    </h1>
+                    <p class="text-[10px] md:text-xs text-emerald-400 font-medium">วิทยาศาสตร์ ม.3: ภารกิจ 12 ด่านกอบกู้ระบบนิเวศ (สสวท.)</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2 md:space-x-4">
+                <!-- Sound Toggle -->
+                <button id="sound-btn" onclick="soundManager.toggleSound()" class="p-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs md:text-sm flex items-center transition">
+                    <span id="sound-icon" class="mr-1">🔊</span>
+                    <span id="sound-text" class="hidden sm:inline">เสียงเปิด</span>
+                </button>
+                <!-- Player Profile Indicator -->
+                <div id="nav-player-pill" class="hidden items-center bg-slate-800/90 border border-emerald-500/30 px-3 py-1 rounded-xl text-xs">
+                    <span class="text-emerald-400 font-semibold mr-2" id="nav-player-name">ผู้พิทักษ์</span>
+                    <span class="bg-emerald-950 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-500/30 font-bold" id="nav-score">0 / 65</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dynamic Content Area -->
+    <main class="flex-grow flex items-center justify-center p-3 md:p-6 w-full max-w-5xl mx-auto">
+        
+        <!-- SCREEN 1: REGISTRATION / WELCOME -->
+        <section id="screen-auth" class="w-full max-w-xl bg-slate-900/90 backdrop-blur-xl border border-slate-700/80 rounded-3xl p-6 md:p-10 shadow-2xl relative text-center">
+            <div class="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-4 animate-bounce-subtle">
+                <span>🛡️ แพลตฟอร์มการเรียนรู้ Active Learning วิทยาศาสตร์ ม.3</span>
+            </div>
+
+            <h2 class="font-heading text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 mb-2 text-glow">
+                ภารกิจ 12 ผู้พิทักษ์ระบบนิเวศ
+            </h2>
+            <p class="text-slate-300 text-xs md:text-sm mb-6 leading-relaxed">
+                ตะลุย 12 ด่านการเรียนรู้ระบบนิเวศตามหลักสูตร สสวท. (ด่าน 1-11 ละ 5 ข้อ และด่าน 12 บอสใหญ่ 10 ข้อ รวม 65 ข้อ) บันทึกความคืบหน้าอัตโนมัติ เพื่อสะสมคะแนนรับเกียรติบัตรระดับ The finest, Excellent หรือ Good
+            </p>
+
+            <!-- Registration Form -->
+            <form id="auth-form" onsubmit="app.handleRegister(event)" class="space-y-4 text-left">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1 ml-1">ชื่อ - นามสกุล นักเรียน *</label>
+                    <input type="text" id="input-name" required placeholder="เช่น เด็กชายพิทักษ์ สิ่งแวดล้อม"
+                        class="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-600 focus:border-emerald-400 text-white placeholder-slate-500 text-sm outline-none transition">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1 ml-1">ระดับชั้น / ห้อง *</label>
+                        <input type="text" id="input-class" required placeholder="เช่น ม.3/1"
+                            class="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-600 focus:border-emerald-400 text-white placeholder-slate-500 text-sm outline-none transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1 ml-1">เลขที่ *</label>
+                        <input type="number" id="input-no" required min="1" max="99" placeholder="เช่น 15"
+                            class="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-600 focus:border-emerald-400 text-white placeholder-slate-500 text-sm outline-none transition">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full mt-2 py-3.5 px-6 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-heading font-extrabold text-base shadow-xl shadow-emerald-500/25 transition duration-150 transform hover:-translate-y-0.5 active:translate-y-0">
+                    🎮 เริ่มต้นผจญภัย / ดำเนินการต่อ
+                </button>
+            </form>
+        </section>
+
+        <!-- SCREEN 2: 12-STAGE MAP SELECTOR -->
+        <section id="screen-map" class="hidden w-full space-y-6">
+            <!-- Student Header Banner -->
+            <div class="bg-slate-900/90 border border-slate-700/80 rounded-2xl p-4 md:p-5 flex flex-wrap items-center justify-between gap-4 shadow-xl">
+                <div>
+                    <span class="text-xs uppercase tracking-wider text-emerald-400 font-bold">แฟ้มประวัติผู้พิทักษ์ระบบนิเวศ</span>
+                    <h2 class="font-heading font-black text-xl md:text-2xl text-white">
+                        <span id="map-player-display">นักเรียน</span> 
+                        <span class="text-xs font-normal text-slate-400" id="map-meta-display">(ม.3/1 เลขที่ 1)</span>
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-0.5">เล่นวันละ 1 ด่าน หรือท้าทายเพื่อปรับปรุงคะแนนให้ถึงเกณฑ์รับเกียรติบัตร</p>
+                </div>
+
+                <div class="flex items-center space-x-3">
+                    <div class="bg-slate-800 border border-emerald-500/30 px-3.5 py-2 rounded-xl text-center">
+                        <div class="text-[10px] text-slate-400 uppercase font-semibold">คะแนนสะสมรวม</div>
+                        <div class="font-heading font-extrabold text-lg text-emerald-300" id="map-total-score">0 / 65</div>
+                    </div>
+                    <!-- Reset Progress Button -->
+                    <button onclick="app.confirmReset()" class="p-2.5 rounded-xl bg-rose-950/40 border border-rose-800 hover:bg-rose-900/60 text-rose-300 text-xs transition" title="ล้างข้อมูลเริ่มใหม่ทั้งหมด">
+                        🔄 เปลี่ยนผู้เล่น
+                    </button>
+                </div>
+            </div>
+
+            <!-- Certificate Button Banner -->
+            <div id="cert-banner" class="bg-gradient-to-r from-amber-950/60 via-slate-900/80 to-emerald-950/60 border border-amber-500/40 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-lg">
+                <div class="flex items-center space-x-3">
+                    <span class="text-3xl">📜</span>
+                    <div>
+                        <h3 class="font-heading font-bold text-sm md:text-base text-amber-200">ระบบประเมินผลสัมฤทธิ์และเกียรติบัตร (รวม 65 ข้อ)</h3>
+                        <p class="text-xs text-slate-300">เกณฑ์: &gt;=80% (The finest) | &gt;=70% (Excellent) | &gt;=60% (Good) | &lt;60% (ไม่ผ่านเกณฑ์)</p>
+                    </div>
+                </div>
+                <button id="view-cert-btn" onclick="app.checkCertificateEligibility()" class="w-full sm:w-auto px-5 py-2.5 rounded-xl font-heading font-bold text-xs md:text-sm bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-lg shadow-amber-500/20 transition whitespace-nowrap">
+                    🏆 ตรวจสอบผลสัมฤทธิ์ / รับเกียรติบัตร
+                </button>
+            </div>
+
+            <!-- Grid of 12 Stages -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5" id="stages-grid">
+                <!-- Dynamically populated by JS -->
+            </div>
+        </section>
+
+        <!-- SCREEN 3: RPG BATTLE ARENA -->
+        <section id="screen-battle" class="hidden w-full max-w-4xl space-y-4">
+            <!-- Stage Top Bar Info -->
+            <div class="bg-slate-900/90 border border-slate-700/80 rounded-2xl p-3.5 flex flex-wrap justify-between items-center gap-2 shadow-lg">
+                <div class="flex items-center space-x-2.5">
+                    <button onclick="app.returnToMap()" class="p-1.5 px-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition">
+                        ← แผนที่
+                    </button>
+                    <div>
+                        <span id="battle-stage-number" class="text-[11px] text-emerald-400 font-bold uppercase tracking-wider">ด่านที่ 1</span>
+                        <h3 id="battle-stage-name" class="font-heading font-bold text-sm md:text-base text-white">ระบบนิเวศรอบตัวเรา</h3>
+                    </div>
+                </div>
+                <div class="text-xs text-slate-400 font-semibold">
+                    ข้อที่ <span id="q-number" class="text-emerald-400 font-bold">1</span> / <span id="q-total" class="text-slate-300">5</span> ข้อ
+                </div>
+            </div>
+
+            <!-- Health Bars Arena Field -->
+            <div class="bg-slate-950/90 border border-slate-800 rounded-3xl p-5 md:p-7 relative overflow-hidden shadow-2xl flex items-center justify-between">
+                <!-- Floating Damage Output -->
+                <div id="float-damage" class="absolute left-1/2 top-1/3 transform -translate-x-1/2 text-2xl md:text-3xl font-heading font-black opacity-0 pointer-events-none transition-all duration-500 z-20">
+                    -20 HP
+                </div>
+
+                <!-- Player Side -->
+                <div id="player-avatar-box" class="flex flex-col items-center w-36 md:w-48 text-center transition-transform duration-300 z-10">
+                    <div class="w-16 h-16 md:w-24 md:h-24 rounded-2xl bg-emerald-950/60 border-2 border-emerald-400/60 flex items-center justify-center p-2 mb-2 shadow-lg shadow-emerald-500/10">
+                        <svg class="w-full h-full text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            <path d="m9 12 2 2 4-4"/>
+                        </svg>
+                    </div>
+                    <span class="font-heading font-bold text-xs md:text-sm text-emerald-300" id="battle-player-name">ผู้พิทักษ์</span>
+                    <!-- Player HP Bar -->
+                    <div class="w-full mt-1.5">
+                        <div class="flex justify-between text-[10px] font-bold mb-0.5">
+                            <span class="text-slate-400">HP ของคุณ</span>
+                            <span id="player-hp-text" class="text-emerald-400">100 / 100</span>
+                        </div>
+                        <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden border border-slate-700">
+                            <div id="player-hp-bar" class="bg-emerald-500 h-full w-full transition-all duration-500 ease-out"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Center VS Badge -->
+                <div class="font-heading font-black text-slate-700 text-xl md:text-2xl animate-pulse px-2">
+                    VS
+                </div>
+
+                <!-- Boss Side -->
+                <div id="boss-avatar-box" class="flex flex-col items-center w-36 md:w-48 text-center transition-transform duration-300 z-10">
+                    <div id="boss-svg-holder" class="w-16 h-16 md:w-24 md:h-24 rounded-2xl bg-slate-900/90 border-2 border-rose-500/60 flex items-center justify-center p-2 mb-2 shadow-xl shadow-rose-950/50 animate-float">
+                        <!-- Boss SVG inserted here -->
+                    </div>
+                    <span class="font-heading font-bold text-xs md:text-sm text-rose-300" id="battle-boss-name">บอสประจำด่าน</span>
+                    <!-- Boss HP Bar -->
+                    <div class="w-full mt-1.5">
+                        <div class="flex justify-between text-[10px] font-bold mb-0.5">
+                            <span class="text-slate-400">HP บอส</span>
+                            <span id="boss-hp-text" class="text-rose-400">100 / 100</span>
+                        </div>
+                        <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden border border-slate-700">
+                            <div id="boss-hp-bar" class="bg-rose-500 h-full w-full transition-all duration-500 ease-out"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Interaction Question Box -->
+            <div class="bg-slate-900/90 border border-slate-700/80 rounded-2xl p-4 md:p-6 shadow-xl space-y-4">
+                <div class="flex items-center space-x-2 border-b border-slate-800 pb-2.5">
+                    <span class="text-xs bg-emerald-500/20 text-emerald-300 font-bold px-2.5 py-0.5 rounded-md">
+                        โจทย์คิดวิเคราะห์
+                    </span>
+                    <span class="text-xs text-slate-400" id="q-concept-badge">หัวข้อหลัก</span>
+                </div>
+
+                <h4 id="question-text" class="text-sm md:text-base font-medium text-slate-100 leading-relaxed min-h-[50px]">
+                    กำลังโหลดคำถาม...
+                </h4>
+
+                <!-- Choice Buttons -->
+                <div id="choices-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                    <!-- 4 options created by JS -->
+                </div>
+            </div>
+
+            <!-- Feedback Modal / Drawer (Explanation) -->
+            <div id="explanation-box" class="hidden bg-slate-800/95 border-2 rounded-2xl p-4 md:p-5 shadow-2xl transition-all duration-300">
+                <div class="flex items-start space-x-3">
+                    <span id="explanation-icon" class="text-2xl md:text-3xl">💡</span>
+                    <div class="flex-grow space-y-1">
+                        <h5 id="explanation-title" class="font-heading font-bold text-sm md:text-base">คำอธิบายทางวิทยาศาสตร์</h5>
+                        <p id="explanation-content" class="text-xs md:text-sm text-slate-300 leading-relaxed"></p>
+                    </div>
+                </div>
+                <div class="mt-4 flex justify-end">
+                    <button onclick="app.proceedNextTurn()" class="px-5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-heading font-bold text-xs md:text-sm shadow transition">
+                        คำถามถัดไป ➔
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCREEN 4: STAGE CLEARED CELEBRATION -->
+        <section id="screen-cleared" class="hidden w-full max-w-md bg-slate-900/95 border border-emerald-500/50 rounded-3xl p-6 md:p-8 text-center space-y-5 shadow-2xl">
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-emerald-950/80 border border-emerald-400/50 flex items-center justify-center text-4xl animate-bounce-subtle">
+                🌟
+            </div>
+            <div>
+                <span class="text-xs uppercase font-bold tracking-widest text-emerald-400">พิชิตด่านสำเร็จ!</span>
+                <h3 id="cleared-title" class="font-heading font-extrabold text-xl md:text-2xl text-white mt-1">สมดุลธรรมชาติได้รับการฟื้นฟู</h3>
+                <p id="cleared-summary" class="text-xs md:text-sm text-slate-300 mt-2">คุณผ่านการทดสอบในด่านนี้เรียบร้อยแล้ว</p>
+            </div>
+
+            <div class="bg-slate-800/80 rounded-2xl p-3.5 border border-slate-700 flex justify-around">
+                <div>
+                    <span class="text-[10px] text-slate-400 block font-semibold">คะแนนที่ได้ในด่านนี้</span>
+                    <span class="font-heading font-extrabold text-base text-emerald-300" id="cleared-score-display">5 / 5 ข้อ</span>
+                </div>
+                <div class="border-r border-slate-700"></div>
+                <div>
+                    <span class="text-[10px] text-slate-400 block font-semibold">สถานะ</span>
+                    <span class="font-heading font-extrabold text-base text-cyan-300" id="cleared-status-text">ปลดล็อกด่านต่อไป</span>
+                </div>
+            </div>
+
+            <button onclick="app.showStageMap()" class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 text-slate-950 font-heading font-bold text-sm shadow-lg transition">
+                กลับสู่แผนที่หลัก
+            </button>
+        </section>
+
+        <!-- SCREEN 5: GAME OVER (HP DEPLETED) -->
+        <section id="screen-gameover" class="hidden w-full max-w-md bg-slate-900/95 border border-rose-500/50 rounded-3xl p-6 md:p-8 text-center space-y-5 shadow-2xl">
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-rose-950/80 border border-rose-500/50 flex items-center justify-center text-4xl">
+                💀
+            </div>
+            <div>
+                <span class="text-xs uppercase font-bold tracking-widest text-rose-400">ระบบนิเวศเสียสมดุล!</span>
+                <h3 class="font-heading font-extrabold text-xl md:text-2xl text-white mt-1">พลังชีวิตของผู้พิทักษ์หมดลง</h3>
+                <p class="text-xs md:text-sm text-slate-300 mt-2">
+                    การตอบผิดทำให้บอสโจมตีจน HP เหลือ 0 ทบทวนแนวคิดแล้วลองสู้อีกครั้งเพื่อกอบกู้ธรรมชาติ!
+                </p>
+            </div>
+
+            <div class="flex space-x-3">
+                <button onclick="app.restartCurrentStage()" class="flex-1 py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-heading font-bold text-xs md:text-sm shadow-lg transition">
+                    🔄 ท้าทายด่านนี้ใหม่
+                </button>
+                <button onclick="app.showStageMap()" class="px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-xs md:text-sm border border-slate-700 transition">
+                    แผนที่
+                </button>
+            </div>
+        </section>
+
+        <!-- SCREEN 6: NOT PASSED CRITERIA WARNING MODAL -->
+        <section id="screen-failed-criteria" class="hidden w-full max-w-md bg-slate-900/95 border border-amber-500/50 rounded-3xl p-6 md:p-8 text-center space-y-5 shadow-2xl">
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-amber-950/80 border border-amber-500/50 flex items-center justify-center text-4xl">
+                ⚠️
+            </div>
+            <div>
+                <span class="text-xs uppercase font-bold tracking-widest text-amber-400">ยังไม่ผ่านเกณฑ์การรับเกียรติบัตร</span>
+                <h3 class="font-heading font-extrabold text-xl text-white mt-1">คะแนนรวมยังไม่ถึง 60%</h3>
+                <p class="text-xs md:text-sm text-slate-300 mt-2 leading-relaxed" id="failed-criteria-text">
+                    คุณทำคะแนนรวมได้น้อยกว่า 60% หรือยังเล่นไม่ครบทั้ง 12 ด่าน จึงยังไม่สามารถออกเกียรติบัตรได้ กรุณากลับไปทบทวนเนื้อหาและกดทำด่านที่คะแนนน้อยใหม่อีกครั้งเพื่อสะสมคะแนนให้ผ่านเกณฑ์
+                </p>
+            </div>
+            <button onclick="app.showStageMap()" class="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-heading font-bold text-sm transition">
+                กลับไปปรับปรุงคะแนนในแผนที่
+            </button>
+        </section>
+
+        <!-- SCREEN 7: OFFICIAL CERTIFICATE DISPLAY -->
+        <section id="screen-certificate" class="hidden w-full max-w-4xl space-y-6">
+            <div class="text-center space-y-1 no-print">
+                <span class="text-xs uppercase tracking-widest text-amber-300 font-bold bg-amber-950/80 px-3 py-1 rounded-full border border-amber-500/40">
+                    🏆 ผ่านการประเมินตามหลักสูตร สสวท. ครบ 12 บทเรียน
+                </span>
+                <h2 class="font-heading text-2xl md:text-3xl font-extrabold text-white">ใบประกาศเกียรติคุณผู้พิทักษ์ระบบนิเวศ</h2>
+                <p class="text-xs text-slate-300">สามารถกดปุ่มสั่งพิมพ์หรือบันทึกเป็นไฟล์ PDF ขนาด A4 แนวนอนเพื่อส่งครูผู้สอนได้ทันที</p>
+            </div>
+
+            <!-- Printable Certificate Body -->
+            <div id="printable-certificate" class="bg-gradient-to-br from-amber-50 via-white to-emerald-50 text-slate-900 rounded-3xl p-6 md:p-10 border-8 border-double border-amber-700/50 shadow-2xl relative overflow-hidden">
+                <!-- Border Leaf watermark ornaments -->
+                <div class="absolute top-2 left-2 text-3xl opacity-20">🌿</div>
+                <div class="absolute top-2 right-2 text-3xl opacity-20">🌍</div>
+                <div class="absolute bottom-2 left-2 text-3xl opacity-20">🧬</div>
+                <div class="absolute bottom-2 right-2 text-3xl opacity-20">🛡️</div>
+
+                <div class="text-center space-y-3.5">
+                    <div class="flex justify-center items-center space-x-2">
+                        <span class="text-2xl">🌱</span>
+                        <span class="font-heading font-extrabold text-xs md:text-sm tracking-widest text-emerald-900 uppercase">
+                            กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี • หลักสูตรแกนกลาง สสวท.
+                        </span>
+                        <span class="text-2xl">🌱</span>
+                    </div>
+
+                    <h1 class="font-heading font-black text-2xl md:text-4xl text-amber-950 tracking-wide">
+                        เกียรติบัตรนักพิทักษ์ระบบนิเวศดีเด่น
+                    </h1>
+                    <p class="text-xs text-slate-600 font-medium tracking-wide">Certificate of Ecological Literacy and Environmental Stewardship</p>
+
+                    <div class="py-1">
+                        <p class="text-xs text-slate-700">เกียรติบัตรฉบับนี้มอบให้เพื่อแสดงว่า</p>
+                        <h2 id="cert-student-name" class="font-heading font-extrabold text-2xl md:text-3xl text-emerald-900 underline decoration-amber-500 decoration-2 underline-offset-8 mt-1">
+                            เด็กหญิง / เด็กชาย ผู้พิทักษ์
+                        </h2>
+                        <p id="cert-student-meta" class="text-xs font-semibold text-slate-600 mt-2">ชั้นมัธยมศึกษาปีที่ 3/1 • เลขที่ 1</p>
+                    </div>
+
+                    <p class="text-xs text-slate-700 max-w-xl mx-auto leading-relaxed">
+                        ได้ผ่านการปฏิบัติภารกิจเกมการเรียนรู้วิทยาศาสตร์ ม.3 ครบทั้ง 12 ด่านการเรียนรู้ โดยมีความรู้ความเข้าใจครอบคลุมปฏิสัมพันธ์ในระบบนิเวศ โซ่อาหาร กฎการถ่ายทอดพลังงาน 10% การหมุนเวียนสาร การเปลี่ยนแปลงแทนที่ ตลอดจนการวิเคราะห์วิกฤตสิ่งแวดล้อมโลกปัจจุบัน
+                    </p>
+
+                    <!-- Evaluation Level Badge Box -->
+                    <div class="bg-white/90 rounded-2xl p-3 border-2 border-amber-300 max-w-md mx-auto shadow-sm">
+                        <span class="text-[11px] text-slate-500 font-semibold block">ระดับผลสัมฤทธิ์การประเมิน:</span>
+                        <span id="cert-grade-level" class="font-heading font-black text-xl md:text-2xl text-emerald-700">
+                            The finest (ดีเลิศ)
+                        </span>
+                        <span id="cert-percentage-text" class="text-xs text-slate-600 block mt-0.5">
+                            คะแนนสะสมรวม: 58 / 65 ข้อ (89.2%)
+                        </span>
+                    </div>
+
+                    <!-- Signatures & Date footer -->
+                    <div class="pt-3 flex justify-between items-center border-t border-amber-200/80 px-4">
+                        <div class="text-left">
+                            <span class="text-[10px] text-slate-500 block">ออกให้ ณ วันที่:</span>
+                            <span id="cert-date" class="font-semibold text-xs text-slate-800">1 พฤศจิกายน 2569</span>
+                        </div>
+
+                        <!-- Golden Seal -->
+                        <div class="w-16 h-16 rounded-full border-4 border-amber-500 bg-amber-400/20 flex flex-col items-center justify-center p-1 text-center shadow-md">
+                            <span class="text-amber-800 text-sm">🎖️</span>
+                            <span class="text-[7.5px] font-bold text-amber-900 leading-none">ECO-MASTER<br>CERTIFIED</span>
+                        </div>
+
+                        <div class="text-right">
+                            <span class="text-[10px] text-slate-500 block">ผู้ประเมิน:</span>
+                            <span class="font-heading font-semibold text-xs text-slate-800">ระบบ AI วิทยาศาสตร์ สสวท.</span>
+                            <span class="text-[9px] text-emerald-700 block">Ecosystem Guardian Academy</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions Row -->
+            <div class="flex flex-wrap items-center justify-center gap-3 no-print">
+                <button onclick="window.print()" class="px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-heading font-bold text-sm shadow-lg shadow-amber-500/20 flex items-center space-x-2 transition">
+                    <span>🖨️</span>
+                    <span>พิมพ์หรือบันทึกเป็น PDF (A4 แนวนอน)</span>
+                </button>
+                <button onclick="app.showStageMap()" class="px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium text-xs md:text-sm border border-slate-700 transition">
+                    กลับสู่แผนที่
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Custom Modal for Confirmation -->
+    <div id="confirm-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 max-w-sm w-full text-center space-y-4">
+            <span class="text-3xl">⚠️</span>
+            <h4 class="font-heading font-bold text-lg text-white">ยืนยันการเปลี่ยนผู้เล่น / ล้างข้อมูล?</h4>
+            <p class="text-xs text-slate-300">คะแนนและความคืบหน้าทั้ง 12 ด่านจะถูกรีเซ็ตเป็นศูนย์ และต้องลงทะเบียนใหม่</p>
+            <div class="flex space-x-2 pt-2">
+                <button onclick="app.executeReset()" class="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs">ยืนยัน ล้างข้อมูล</button>
+                <button onclick="app.closeConfirmModal()" class="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs">ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="w-full bg-slate-950/80 border-t border-slate-800/80 py-2.5 text-center text-[11px] text-slate-500 no-print">
+        Ecosystem Master: สื่อเกมการเรียนรู้วิทยาศาสตร์ ม.3 ตามหลักสูตรแกนกลาง สสวท. (12 ด่าน รวม 65 ข้อคิดวิเคราะห์)
+    </footer>
+
+    <!-- JAVASCRIPT GAME LOGIC & 65 QUESTIONS -->
+    <script>
+        /* ==========================================================================
+           1. WEB AUDIO API SYNTHESIZER ENGINE (Pure JS, Zero External Files)
+           ========================================================================== */
+        class SoundEngine {
+            constructor() {
+                this.ctx = null;
+                this.enabled = true;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    if (AudioCtx) this.ctx = new AudioCtx();
+                }
+                if (this.ctx && this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            }
+
+            toggleSound() {
+                this.enabled = !this.enabled;
+                const icon = document.getElementById('sound-icon');
+                const text = document.getElementById('sound-text');
+                if (this.enabled) {
+                    icon.textContent = '🔊';
+                    text.textContent = 'เสียงเปิด';
+                    this.playBeep(587.33, 'triangle', 0.15, 0.2);
+                } else {
+                    icon.textContent = '🔇';
+                    text.textContent = 'เสียงปิด';
+                }
+            }
+
+            playBeep(freq, type = 'sine', duration = 0.2, gainStart = 0.2) {
+                if (!this.enabled) return;
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                    gain.gain.setValueAtTime(gainStart, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + duration);
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+
+            playAttack() {
+                if (!this.enabled) return;
+                this.playBeep(350, 'triangle', 0.12, 0.25);
+                setTimeout(() => this.playBeep(700, 'sine', 0.18, 0.2), 60);
+            }
+
+            playPlayerHurt() {
+                if (!this.enabled) return;
+                this.playBeep(120, 'sawtooth', 0.25, 0.3);
+                setTimeout(() => this.playBeep(85, 'square', 0.3, 0.25), 100);
+            }
+
+            playVictory() {
+                if (!this.enabled) return;
+                const notes = [523.25, 659.25, 783.99, 1046.5];
+                notes.forEach((f, idx) => setTimeout(() => this.playBeep(f, 'triangle', 0.25, 0.2), idx * 120));
+            }
+        }
+        const soundManager = new SoundEngine();
+
+        /* ==========================================================================
+           2. 12 CURRICULUM STAGES (STAGES 1-11: 5 QUESTIONS EACH, STAGE 12: 10 QUESTIONS)
+           TOTAL = 65 QUESTIONS
+           ========================================================================== */
+        const STAGES_DATA = [
+            {
+                id: 1,
+                title: "ระบบนิเวศรอบตัวเรา (Ecosystem)",
+                boss: "โกเลมหินปฐพี (Terran Golem)",
+                badge: "ว 1.1 ม.3/1",
+                qCount: 5,
+                bossDmg: 20,
+                playerDmg: 20,
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full"><polygon points="50,15 80,35 75,75 50,90 25,75 20,35" fill="#78350f" stroke="#d97706" stroke-width="3"/><circle cx="40" cy="42" r="5" fill="#f59e0b"/><circle cx="60" cy="42" r="5" fill="#f59e0b"/><path d="M35,62 Q50,72 65,62" stroke="#451a03" stroke-width="3" fill="none"/></svg>`,
+                questions: [
+                    {
+                        concept: "ความหมายของระบบนิเวศ",
+                        text: "นักเรียนสำรวจ 'สระบัวหลังโรงเรียน' พบแหน ปลาหางนกยูง สาหร่าย หอยขม แสงแดด และตะกอนดิน ข้อความใดอธิบายความเป็น **ระบบนิเวศ (Ecosystem)** ของสระบัวนี้ได้ถูกต้องที่สุดตามหลักวิทยาศาสตร์?",
+                        options: [
+                            "ก. การรวมตัวกันของสิ่งมีชีวิตสายพันธุ์เดียวกันในบริเวณสระบัว",
+                            "ข. ความสัมพันธ์ระหว่างกลุ่มสิ่งมีชีวิตต่างชนิดกันและมีความสัมพันธ์กับสิ่งแวดล้อมที่ไม่มีชีวิตในสระบัว",
+                            "ค. แหล่งอาศัยทางกายภาพที่มีเฉพาะน้ำและแร่ธาตุที่เอื้อต่อการเกิดสิ่งมีชีวิตใหม่",
+                            "ง. การปรับตัวของพืชน้ำเพื่อการสังเคราะห์ด้วยแสงในเวลากลางวันเท่านั้น"
+                        ],
+                        ans: 1,
+                        exp: "ระบบนิเวศ (Ecosystem) คือหน่วยเชิงหน้าที่ที่ประกอบด้วยกลุ่มสิ่งมีชีวิต (Community) นานาชนิด อาศัยอยู่ร่วมกันในแหล่งที่อยู่ใดแห่งหนึ่ง และมีปฏิสัมพันธ์ทั้งระหว่างสิ่งมีชีวิตด้วยกันเอง และกับสิ่งแวดล้อมทางกายภาพ"
+                    },
+                    {
+                        concept: "แหล่งที่อยู่อาศัย (Habitat)",
+                        text: "หากนักวิทยาศาสตร์กล่าวว่า 'โพรงไม้ของต้นไทรใหญ่เป็นแหล่งที่อยู่อาศัย (Habitat) ของนกเงือก' คำว่า **แหล่งที่อยู่อาศัย (Habitat)** มีความหมายเฉพาะเจาะจงแตกต่างจากระบบนิเวศอย่างไร?",
+                        options: [
+                            "ก. เป็นขอบเขตทางภูมิศาสตร์ที่มีสภาพแวดล้อมเฉพาะที่สิ่งมีชีวิตชนิดนั้นใช้ดำรงชีวิต หลบภัย และสืบพันธุ์",
+                            "ข. คือระบบหมุนเวียนสารเคมีขนาดใหญ่ที่มีสิ่งมีชีวิตทุกสปีชีส์บนโลกอาศัยอยู่ร่วมกัน",
+                            "ค. เป็นบริเวณที่มีเฉพาะปัจจัยทางชีวภาพโดยไม่มีปัจจัยทางกายภาพเข้ามาเกี่ยวข้อง",
+                            "ง. คือกระบวนการถ่ายทอดพลังงานจากผู้ผลิตไปยังผู้บริโภคระดับต่างๆ"
+                        ],
+                        ans: 0,
+                        exp: "แหล่งที่อยู่อาศัย (Habitat) หมายถึงสถานที่เฉพาะทางกายภาพที่สิ่งมีชีวิตชนิดหนึ่งๆ ดำรงชีวิตอยู่ มีอาหาร น้ำ ที่หลบภัย และเงื่อนไขที่เหมาะสมต่อการอยู่รอดของสปีชีส์นั้นๆ"
+                    },
+                    {
+                        concept: "ประเภทของระบบนิเวศ",
+                        text: "เปรียบเทียบระหว่าง 'ระบบนิเวศป่าดิบชื้น (บนบก)' กับ 'ระบบนิเวศทะเลลึก (ในน้ำ)' ปัจจัยทางกายภาพข้อใดเป็น **อุปสรรคสำคัญที่สุด** ต่อการผลิตอาหารขั้นปฐมภูมิของสิ่งมีชีวิตในทะเลลึก?",
+                        options: [
+                            "ก. ความเค็มของน้ำทะเลที่สูงเกินไป",
+                            "ข. การขาดแคลนแสงสว่างเนื่องจากแสงส่องลงไปไม่ถึง",
+                            "ค. ความเข้มข้นของก๊าซคาร์บอนไดออกไซด์ในน้ำมีมากเกินไป",
+                            "ง. แรงดันน้ำไม่เพียงพอต่อการแบ่งเซลล์ของพืช"
+                        ],
+                        ans: 1,
+                        exp: "ในระบบนิเวศน้ำลึก (Aphotic zone) แสงแดดส่องลงไปไม่ถึง ทำให้พืชหรือแพลงก์ตอนพืชไม่สามารถสังเคราะห์ด้วยแสงได้ สิ่งมีชีวิตจึงต้องพึ่งพาสารอินทรีย์ที่ตกลงมาจากผิวน้ำหรือการสังเคราะห์เคมี (Chemosynthesis)"
+                    },
+                    {
+                        concept: "การปรับตัวของสิ่งมีชีวิตในระบบนิเวศป่าชายเลน",
+                        text: "ต้นโกงกางในป่าชายเลนมี 'รากค้ำจุน (Prop root)' แตกแขนงระโยงระยางจำนวนมาก การปรับตัวทางโครงสร้างนี้มีประโยชน์เชิงนิเวศอย่างไรเพื่อรับมือกับสภาพแวดล้อม?",
+                        options: [
+                            "ก. เพื่อดักจับแมลงและสัตว์หน้าดินมาเป็นสารอาหารเสริม",
+                            "ข. เพื่อพยุงลำต้นให้ตั้งตรงในดินเลนที่อ่อนนุ่มและต้านทานแรงคลื่นลมซัด",
+                            "ค. เพื่อเพิ่มการคายน้ำให้รวดเร็วขึ้นในสภาพอากาศร้อนชื้น",
+                            "ง. เพื่อป้องกันไม่ให้สัตว์น้ำเข้ามาอาศัยวางไข่บริเวณโคนต้น"
+                        ],
+                        ans: 1,
+                        exp: "ดินในป่าชายเลนเป็นดินเลนละเอียด อ่อนนุ่ม ขาดออกซิเจน และมีคลื่นลมซัด รากค้ำจุนของโกงกางช่วยพยุงลำต้นไม่ให้ล้ม และช่วยในการหายใจรับออกซิเจนจากอากาศเหนือน้ำ"
+                    },
+                    {
+                        concept: "การวิเคราะห์ระบบนิเวศท้องถิ่น",
+                        text: "ในระบบนิเวศทุ่งนา หากชาวนาสูบน้ำออกจากนาจนแห้งขอดเพื่อเตรียมเกี่ยวข้าว การเปลี่ยนแปลงนี้จะส่งผลกระทบต่อสิ่งมีชีวิตกลุ่มใดในท้องถิ่นอย่างรวดเร็วที่สุด?",
+                        options: [
+                            "ก. ปูนา ปลา และหอยเชอรี่ต้องจำศีลในโคลนหรืออาจตายเพราะขาดน้ำ",
+                            "ข. นกกินปลาจะเพิ่มจำนวนขึ้นอย่างมหาศาลตลอดไป",
+                            "ค. ต้นข้าวจะสังเคราะห์ด้วยแสงได้เร็วขึ้น 10 เท่า",
+                            "ง. แบคทีเรียย่อยสลายทั้งหมดจะกลายพันธุ์เป็นสัตว์กินพืช"
+                        ],
+                        ans: 0,
+                        exp: "เมื่อน้ำซึ่งเป็นปัจจัยกายภาพหลักในระบบนิเวศนาข้าวหมดลง สัตว์น้ำและสิ่งมีชีวิตหน้าดิน เช่น ปู ปลา หอย จะขาดออกซิเจนและความชื้น จำเป็นต้องมุดดินจำศีลหรือย้ายถิ่นฐาน มิฉะนั้นจะตาย"
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: "องค์ประกอบของระบบนิเวศ (Components)",
+                boss: "ภูตปัจจัยกายภาพ (Abiotic Phantom)",
+                badge: "ว 1.1 ม.3/1",
+                qCount: 5,
+                bossDmg: 20,
+                playerDmg: 20,
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full"><path d="M50,15 Q80,40 70,80 Q50,95 30,80 Q20,40 50,15" fill="#0284c7" stroke="#38bdf8" stroke-width="3"/><circle cx="42" cy="48" r="4" fill="#f8fafc"/><circle cx="58" cy="48" r="4" fill="#f8fafc"/><path d="M40,68 Q50,60 60,68" stroke="#0369a1" stroke-width="2" fill="none"/></svg>`,
+                questions: [
+                    {
+                        concept: "การจำแนก Biotic vs Abiotic",
+                        text: "ข้อใดจัดกลุ่มองค์ประกอบทางชีวภาพ (Biotic Factor) และองค์ประกอบทางกายภาพ (Abiotic Factor) ในระบบนิเวศป่าเบญจพรรณได้ถูกต้องทั้งหมด?",
+                        options: [
+                            "ก. ชีวภาพ: ต้นสัก, เห็ดโคน, ไส้เดือนดิน | กายภาพ: แสงแดด, ปริมาณน้ำฝน, แร่ธาตุในดิน",
+                            "ข. ชีวภาพ: ซากใบไม้ผุ, ก๊าซออกซิเจน, นกหัวขวาน | กายภาพ: แบคทีเรีย, ความชื้น, หิน",
+                            "ค. ชีวภาพ: กระรอก, ตะไคร่น้ำ, อุณหภูมิ | กายภาพ: ความเป็นกรด-ด่าง, แสงแดด, กวาง",
+                            "ง. ชีวภาพ: สารอินทรีย์, พลังงานแสง | กายภาพ: ปลวก, ไวรัส, ดินร่วน"
+                        ],
+                        ans: 0,
+                        exp: "Biotic Factor คือสิ่งมีชีวิตทั้งหมด (พืช สัตว์ จุลินทรีย์) ส่วน Abiotic Factor คือสิ่งไม่มีชีวิตและสภาวะแวดล้อม (แสง อุณหภูมิ น้ำ ดิน อากาศ แร่ธาตุ)"
+                    },
+                    {
+                        concept: "ปัจจัยจำกัด (Limiting Factor)",
+                        text: "พืชชั้นล่างในป่าดิบชื้น เช่น เฟิร์นและบีโกเนีย มีใบสีเขียวเข้มและแผ่นใบกว้าง สะท้อนว่า **ปัจจัยทางกายภาพใดเป็นปัจจัยจำกัด (Limiting factor)** ที่มีอิทธิพลต่อการเจริญเติบโตของมันมากที่สุด?",
+                        options: [
+                            "ก. อุณหภูมิที่หนาวเย็นเกินไป",
+                            "ข. ปริมาณแสงแดดที่ส่องลงมาถึงพื้นล่างมีน้อย",
+                            "ค. ปริมาณน้ำฝนที่ไม่เพียงพอต่อการดูดซึม",
+                            "ง. ระดับก๊าซไนโตรเจนในบรรยากาศเจือจาง"
+                        ],
+                        ans: 1,
+                        exp: "ป่าดิบชื้นมีเรือนยอดไม้ชั้นบนหนาทึบ แสงส่องถึงพื้นล่างเพียง 1-2% พืชชั้นล่างจึงต้องปรับตัวขยายแผ่นใบให้กว้างและมีคลอโรฟิลล์หนาแน่นเพื่อดักจับแสงที่มีอยู่อย่างจำกัด"
+                    },
+                    {
+                        concept: "อิทธิพลของ pH ในดินต่อสิ่งมีชีวิต",
+                        text: "หากเกิดฝนกรด (Acid Rain) ทำให้น้ำและดินในพื้นที่เกษตรกรรมมีค่า pH ลดลงเหลือ 4.5 จะส่งผลกระทบต่อองค์ประกอบทางชีวภาพอย่างไร?",
+                        options: [
+                            "ก. พืชจะดูดซึมฟอสฟอรัสได้ดีขึ้นเป็นสองเท่า",
+                            "ข. แบคทีเรียตรึงไนโตรเจนในดินตายหรือทำงานลดลง และรากพืชถูกทำลาย",
+                            "ค. แมลงศัตรูพืชทุกชนิดจะเพิ่มประชากรอย่างรวดเร็ว",
+                            "ง. ดินจะปลดปล่อยก๊าซออกซิเจนออกมาสู่บรรยากาศมากขึ้น"
+                        ],
+                        ans: 1,
+                        exp: "ความเป็นกรดจัด (pH ต่ำ) ยับยั้งการทำงานของจุลินทรีย์ที่เป็นประโยชน์ในดิน (เช่น แบคทีเรียตรึงไนโตรเจนและผู้ย่อยสลาย) และทำให้โลหะหนักละลายออกมาเป็นพิษต่อรากพืช"
+                    },
+                    {
+                        concept: "บทบาทของ Decomposer ในระบบนิเวศ",
+                        text: "หากระบบนิเวศขาดสิ่งมีชีวิตกลุ่ม **ผู้ย่อยสลายสารอินทรีย์ (Decomposer)** เช่น แบคทีเรียและเห็ดรา ผลลัพธ์สุดท้ายที่จะเกิดขึ้นกับโลกคือข้อใด?",
+                        options: [
+                            "ก. ซากสิ่งมีชีวิตทับถมจนแร่ธาตุอนินทรีย์ในดินหมดไป ทำให้ผู้ผลิตไม่สามารถเติบโตได้",
+                            "ข. สัตว์กินเนื้อจะเปลี่ยนพฤติกรรมมาเป็นผู้ผลิตแทนพืช",
+                            "ค. ปริมาณก๊าซคาร์บอนไดออกไซด์ในอากาศจะเพิ่มสูงขึ้นอย่างรวดเร็ว",
+                            "ง. โซ่อาหารจะดำเนินต่อไปได้ตามปกติโดยไม่มีผลกระทบใดๆ"
+                        ],
+                        ans: 0,
+                        exp: "Decomposer ทำหน้าที่เปลี่ยนสารอินทรีย์จากซากพืชซากสัตว์ให้เป็นสารอนินทรีย์ (แร่ธาตุ N, P, K) คืนสู่ดินและน้ำ หากขาดไป แร่ธาตุจะถูกกักขังในซาก และวัฏจักรสารจะหยุดชะงัก"
+                    },
+                    {
+                        concept: "ผลกระทบของอุณหภูมิต่อสัตว์เลือดเย็น",
+                        text: "ในฤดูหนาว กบและสัตว์เลื้อยคลานมักจะอยู่นิ่งๆ ขุดรูฝังตัวใต้ดินและกินอาหารน้อยลง พฤติกรรมนี้สะท้อนความสัมพันธ์ระหว่างองค์ประกอบทางกายภาพและชีวภาพอย่างไร?",
+                        options: [
+                            "ก. การปรับตัวเพื่อป้องกันแสงแดดแผดเผาผิวหนัง",
+                            "ข. การจำศีลเพื่อลดอัตราเมแทบอลิซึม เนื่องจากอุณหภูมิภายนอกส่งผลโดยตรงต่ออุณหภูมิกายของสัตว์เลือดเย็น",
+                            "ค. เพื่อเปิดทางให้สัตว์เลือดอุ่นได้ใช้พื้นที่หากิน",
+                            "ง. การหลบหนีปรสิตที่มักแพร่พันธุ์รวดเร็วในสภาพอากาศหนาวเย็น"
+                        ],
+                        ans: 1,
+                        exp: "สัตว์สะเทินน้ำสะเทินบกและสัตว์เลื้อยคลานเป็นสัตว์เลือดเย็น (Poikilotherm) อุณหภูมิร่างกายเปลี่ยนตามสภาพแวดล้อม เมื่ออากาศเย็น เอนไซม์ทำงานช้าลง จึงต้องจำศีลเพื่อประหยัดพลังงาน"
+                    }
+                ]
+            },
+            {
+                id: 3,
+                title: "ความสัมพันธ์ระหว่างสิ่งมีชีวิต",
+                boss: "นางพญาใยปรสิต (Parasitic Queen)",
+                badge: "ว 1.1 ม.3/2",
+                qCount: 5,
+                bossDmg: 20,
+                playerDmg: 20,
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full"><path d="M50,30 L20,15 M50,45 L10,45 M50,60 L20,80 M50,30 L80,15 M50,45 L90,45 M50,60 L80,80" stroke="#a855f7" stroke-width="3"/><ellipse cx="50" cy="55" rx="18" ry="22" fill="#581c87" stroke="#c084fc" stroke-width="2"/><ellipse cx="50" cy="35" rx="12" ry="10" fill="#3b0764"/><circle cx="45" cy="33" r="2.5" fill="#f43f5e"/><circle cx="55" cy="33" r="2.5" fill="#f43f5e"/></svg>`,
+                questions: [
+                    {
+                        concept: "ภาวะพึ่งพากัน vs ได้ประโยชน์ร่วมกัน",
+                        text: "ข้อใดเปรียบเทียบระหว่าง 'ไลเคน (รากับสาหร่าย)' และ 'ผึ้งกับดอกไม้' ได้ถูกต้องตามหลักสัญลักษณ์ความสัมพันธ์?",
+                        options: [
+                            "ก. ทั้งสองคู่เป็น (+, +) แต่ไลเคนแยกจากกันไม่ได้ (พึ่งพากัน) ส่วนผึ้งกับดอกไม้แยกกันอยู่ได้ (ได้ประโยชน์ร่วมกัน)",
+                            "ข. ไลเคนเป็น (+, 0) ส่วนผึ้งกับดอกไม้เป็น (+, +)",
+                            "ค. ไลเคนเป็น (+, -) แบบปรสิต ส่วนผึ้งกับดอกไม้เป็น (+, +)",
+                            "ง. ทั้งสองคู่เป็น (+, +) และไม่สามารถแยกจากกันได้ทั้งคู่"
+                        ],
+                        ans: 0,
+                        exp: "ภาวะพึ่งพากัน (Mutualism +,+) เช่น ไลเคน สิ่งมีชีวิตทั้งสองชนิดต้องอยู่ร่วมกันตลอดชีวิต หากแยกกันจะตาย ส่วนภาวะได้ประโยชน์ร่วมกัน (Protocooperation +,+) เช่น ผึ้งกับดอกไม้ เมื่อแยกกันก็ยังดำรงชีวิตต่อไปได้"
+                    },
+                    {
+                        concept: "ภาวะอิงอาศัย (Commensalism)",
+                        text: "กล้วยไม้ป่าเจริญเติบโตบนกิ่งไม้ใหญ่ในป่าดงดิบ ความสัมพันธ์นี้จัดเป็นแบบใด และเพราะเหตุใดต้นไม้ใหญ่จึงไม่ได้และไม่เสียประโยชน์ (+, 0)?",
+                        options: [
+                            "ก. ภาวะปรสิต เพราะรากกล้วยไม้เจาะดูดน้ำเลี้ยงจากท่อลำเลียงของต้นไม้ใหญ่",
+                            "ข. ภาวะอิงอาศัย เพราะกล้วยไม้เพียงใช้กิ่งไม้เป็นที่เกาะเพื่อรับแสงแดด โดยรากอากาศดูดความชื้นเอง ไม่ได้แย่งสารอาหาร",
+                            "ค. ภาวะพึ่งพากัน เพราะกล้วยไม้ปล่อยออกซิเจนให้ต้นไม้ใหญ่โดยตรง",
+                            "ง. ภาวะแข่งขัน เพราะทั้งสองชนิดแย่งชิงแร่ธาตุในเปลือกไม้ร่วมกัน"
+                        ],
+                        ans: 1,
+                        exp: "กล้วยไม้เป็นพืชอิงอาศัย (Epiphyte) ใช้ต้นไม้ใหญ่เป็นที่ยึดเกาะเพื่อรับแสงแดดเท่านั้น (+,0) ต่างจากกาฝากที่เป็นปรสิต (+,-) เจาะดูดน้ำและแร่ธาตุจากต้นไม้ผู้ถูกอาศัย"
+                    },
+                    {
+                        concept: "ภาวะปรสิต (Parasitism)",
+                        text: "ความแตกต่างสำคัญระหว่าง **ภาวะการล่าเหยื่อ (Predation: +, -)** กับ **ภาวะปรสิต (Parasitism: +, -)** คือข้อใด?",
+                        options: [
+                            "ก. ผู้ล่ามักมีขนาดเล็กกว่าเหยื่อเสมอ แต่ปรสิตมีขนาดใหญ่กว่าโฮสต์",
+                            "ข. ผู้ล่ามักทำให้เหยื่อตายทันทีเพื่อกินเป็นอาหาร ส่วนปรสิตมักเกาะกินหรืออาศัยในโฮสต์โดยไม่ทำให้โฮสต์ตายในทันที",
+                            "ค. การล่าเหยื่อมีฝ่ายเสียประโยชน์ แต่ภาวะปรสิตไม่มีฝ่ายใดเสียประโยชน์",
+                            "ง. ปรสิตสามารถสร้างอาหารเองได้โดยไม่ต้องพึ่งพาโฮสต์"
+                        ],
+                        ans: 1,
+                        exp: "แม้ทั้งสองภาวะจะมีสัญลักษณ์ (+,-) เหมือนกัน แต่ผู้ล่า (Predator) จะฆ่าเหยื่อ (Prey) เพื่อกินเป็นอาหารทันที ส่วนปรสิต (Parasite) จะดูดกินสารอาหารจากโฮสต์ (Host) อย่างต่อเนื่องและมักไม่ทำให้โฮสต์ตายทันทีเพื่อรักษาแหล่งอาหาร"
+                    },
+                    {
+                        concept: "ภาวะการแก่งแย่งแข่งขัน (Competition)",
+                        text: "เมื่อนำพารามีเซียมสองชนิด คือ *P. aurelia* และ *P. caudatum* มาเลี้ยงในหลอดทดลองเดียวกันที่มีอาหารจำกัด พบว่า *P. caudatum* สูญพันธุ์ไปในที่สุด ปรากฏการณ์นี้อธิบายด้วยหลักการใด?",
+                        options: [
+                            "ก. ภาวะล่าเหยื่อ โดย *P. aurelia* จับ *P. caudatum* กินเป็นอาหาร",
+                            "ข. ภาวะการกีดกันจากการแข่งขัน (Competitive Exclusion Principle) เนื่องจากสิ่งมีชีวิตที่แข่งขันแย่งชิงนิเวศวิทยาเดียวกันชนิดที่ด้อยกว่าจะอยู่รอดไม่ได้",
+                            "ค. ภาวะเป็นกลาง เพราะทั้งสองชนิดไม่มีปฏิสัมพันธ์ต่อกัน",
+                            "ง. การกลายพันธุ์ที่เกิดจากสารพิษในน้ำเลี้ยง"
+                        ],
+                        ans: 1,
+                        exp: "หลักการกีดกันโดยการแข่งขัน (-,-) ชี้ว่าสิ่งมีชีวิต 2 ชนิดที่มีความต้องการทรัพยากรและช่องเชิงนิเวศ (Niche) เหมือนกันทุกประการ จะไม่สามารถอยู่ร่วมกันในพื้นที่จำกัดได้ สปีชีส์ที่มีประสิทธิภาพเหนือกว่าจะอยู่รอด"
+                    },
+                    {
+                        concept: "การจำแนกสถานการณ์ความสัมพันธ์",
+                        text: "ชาวสวนพบ 'มดดำเลี้ยงเพลี้ยอ่อน' โดยมดดำช่วยปกป้องเพลี้ยจากแมลงเต่าทอง และคอยกินน้ำหวาน (Honeydew) ที่เพลี้ยขับถ่ายออกมา ความสัมพันธ์นี้จัดอยู่ในรูปแบบใด?",
+                        options: [
+                            "ก. ภาวะได้ประโยชน์ร่วมกัน (+, +)",
+                            "ข. ภาวะล่าเหยื่อ (+, -)",
+                            "ค. ภาวะอิงอาศัย (+, 0)",
+                            "ง. ภาวะปรสิต (+, -)"
+                        ],
+                        ans: 0,
+                        exp: "มดดำได้น้ำหวานเป็นอาหาร (+) เพลี้ยอ่อนได้รับการปกป้องคุ้มครองจากศัตรูพืช (+) และทั้งคู่สามารถดำรงชีวิตแยกจากกันได้ จึงเป็นภาวะได้ประโยชน์ร่วมกัน (Protocooperation)"
+                    }
+                ]
+            },
+            {
+                id: 4,
+                title: "ห่วงโซ่อาหาร (Food Chain)",
+                boss: "กิ้งก่าผู้กลืนกินห่วงโซ่ (Chain Devourer)",
+                badge: "ว 1.1 ม.3/3",
+                qCount: 5,
+                bossDmg: 20,
+                playerDmg: 20,
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full"><path d="M20,60 Q50,20 80,60 Q50,90 20,60" fill="#15803d" stroke="#4ade80" stroke-width="3"/><circle cx="35" cy="50" r="5" fill="#facc15"/><circle cx="35" cy="50" r="2" fill="#000"/><path d="M70,55 L90,50 L75,65" fill="#dc2626"/></svg>`,
+                questions: [
+                    {
+                        concept: "หลักการเขียนลูกศรในห่วงโซ่อาหาร",
+                        text: "ในการเขียนแผนภาพห่วงโซ่อาหาร: 'หญ้า ➔ ตั๊กแตน ➔ กบ ➔ งู ➔ เหยี่ยว' ทิศทางของหัวลูกศรมีความหมายเชิงฟิสิกส์และชีววิทยาอย่างไร?",
+                        options: [
+                            "ก. ชี้จากสัตว์ที่มีขนาดใหญ่ไปยังสัตว์ที่มีขนาดเล็กกว่า",
+                            "ข. ชี้จากสิ่งมีชีวิตที่ถูกกิน ไปยังสิ่งมีชีวิตที่เป็นผู้กิน เพื่อแสดงทิศทางการถ่ายทอดพลังงานและสารอาหาร",
+                            "ค. ชี้แสดงลำดับวิวัฒนาการทางสายพันธุ์ของสิ่งมีชีวิต",
+                            "ง. ชี้แสดงการเคลื่อนที่เพื่อหาถิ่นที่อยู่ใหม่"
+                        ],
+                        ans: 1,
+                        exp: "ลูกศรในห่วงโซ่อาหารแสดง 'ทิศทางการไหลของพลังงาน' ดังนั้นหัวลูกศรต้องชี้ไปยังสิ่งมีชีวิตที่ได้รับพลังงาน (ผู้กิน) เสมอ"
+                    },
+                    {
+                        concept: "บทบาทของผู้ผลิต (Producer)",
+                        text: "เหตุใด 'พืชสีเขียวและแพลงก์ตอนพืช' จึงถูกจัดเป็นผู้ผลิต (Producer) จุดเริ่มต้นของเกือบทุกห่วงโซ่อาหารบนโลก?",
+                        options: [
+                            "ก. เพราะพวกมันเป็นสิ่งมีชีวิตที่มีจำนวนมากที่สุดในโลก",
+                            "ข. เพราะสามารถเปลี่ยนพลังงานแสงอาทิตย์ให้เป็นพลังงานเคมีสะสมในรูปสารอินทรีย์ผ่านกระบวนการสังเคราะห์ด้วยแสง",
+                            "ค. เพราะไม่ต้องการแร่ธาตุหรือน้ำในการดำรงชีวิต",
+                            "ง. เพราะไม่เคยตกเป็นเหยื่อของสัตว์กินพืช"
+                        ],
+                        ans: 1,
+                        exp: "ผู้ผลิตคือสิ่งมีชีวิตสร้างอาหารเองได้ (Autotroph) โดยดึงพลังงานแสงอาทิตย์มาตรึงก๊าซคาร์บอนไดออกไซด์และน้ำเป็นน้ำตาลกลูโคสและแป้ง สะสมเป็นพลังงานเคมีเริ่มต้นในระบบนิเวศ"
+                    },
+                    {
+                        concept: "ลำดับขั้นผู้บริโภค (Consumer Levels)",
+                        text: "จากห่วงโซ่อาหาร: 'ข้าวโพด ➔ หนูนา ➔ งูเห่า ➔ นกอินทรี' สิ่งมีชีวิตชนิดใดทำหน้าที่เป็น **ผู้บริโภคอันดับที่ 2 (Secondary Consumer)**?",
+                        options: [
+                            "ก. ข้าวโพด",
+                            "ข. หนูนา",
+                            "ค. งูเห่า",
+                            "ง. นกอินทรี"
+                        ],
+                        ans: 2,
+                        exp: "ข้าวโพด = ผู้ผลิต, หนูนา = ผู้บริโภคอันดับที่ 1 (Herbivore), งูเห่า = ผู้บริโภคอันดับที่ 2 (Secondary Consumer / Carnivore), นกอินทรี = ผู้บริโภคอันดับที่ 3 หรือผู้บริโภคลำดับสุดท้าย"
+                    },
+                    {
+                        concept: "สัตว์กินทั้งพืชและสัตว์ (Omnivore)",
+                        text: "หาก 'ไก่' กินทั้งเมล็ดข้าวเปลือก (ผู้ผลิต) และหนอนผีเสื้อ (ผู้บริโภคอันดับ 1) ไก่จะมีบทบาทเป็นผู้บริโภคลำดับใดในระบบนิเวศ?",
+                        options: [
+                            "ก. เป็นผู้ผลิตเท่านั้น",
+                            "ข. สามารถเป็นได้ทั้งผู้บริโภคอันดับที่ 1 และผู้บริโภคอันดับที่ 2 ขึ้นอยู่กับสายอาหารที่พิจารณา",
+                            "ค. เป็นผู้บริโภคอันดับที่ 3 เสมอ",
+                            "ง. เป็นผู้ย่อยสลายสารอินทรีย์"
+                        ],
+                        ans: 1,
+                        exp: "สัตว์กินทั้งพืชและสัตว์ (Omnivore) สามารถดำรงตำแหน่งทางโภชนาการ (Trophic level) ได้หลายระดับ เมื่อกินพืชจะเป็นผู้บริโภคอันดับ 1 แต่เมื่อกินสัตว์กินพืชจะกลายเป็นผู้บริโภคอันดับ 2"
+                    },
+                    {
+                        concept: "Scavenger vs Decomposer",
+                        text: "ข้อใดอธิบายความแตกต่างเชิงนิเวศระหว่าง 'อีแร้ง (Scavenger)' และ 'แบคทีเรียย่อยสลาย (Decomposer)' ได้ถูกต้องที่สุด?",
+                        options: [
+                            "ก. อีแร้งกินซากสัตว์ขนาดใหญ่ด้วยการกลืนกินเข้าสู่ร่างกาย ส่วนแบคทีเรียปล่อยเอนไซม์ออกมาย่อยซากภายนอกเซลล์แล้วดูดซึมสารโมเลกุลเล็กเข้าไป",
+                            "ข. อีแร้งเป็นผู้ผลิต ส่วนแบคทีเรียเป็นผู้บริโภค",
+                            "ค. อีแร้งสามารถย่อยสลายแร่ธาตุกลับคืนสู่ดินได้โดยตรง แต่แบคทีเรียทำไม่ได้",
+                            "ง. อีแร้งเป็นสิ่งมีชีวิตสังเคราะห์แสงได้"
+                        ],
+                        ans: 0,
+                        exp: "ผู้บริโภคซากอินทรีย์ (Scavenger/Detritivore) กินซากโดยการนำเข้าสู่ทางเดินอาหาร ส่วนผู้ย่อยสลาย (Decomposer) จะหลั่งเอนไซม์ออกมาย่อยสลายสารอินทรีย์ภายนอกเซลล์ให้เป็นสารอนินทรีย์โมเลกุลเดี่ยว"
+                    }
+                ]
+            },
+            {
+                id: 5,
+                title: "สายใยอาหาร (Food Web)",
+                boss: "ราชาอสูรสายใย (Web Overlord)",
+                badge: "ว 1.1 ม.3/3",
+                qCount: 5,
+                bossDmg: 20,
+                playerDmg: 20,
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full"><circle cx="50" cy="50" r="35" fill="none" stroke="#6366f1" stroke-width="2"/><line x1="15" y1="50" x2="85" y2="50" stroke="#818cf8" stroke-width="2"/><line x1="50" y1="15" x2="50" y2="85" stroke="#818cf8" stroke-width="2"/><circle cx="50" cy="50" r="15" fill="#312e81" stroke="#c7d2fe" stroke-width="3"/></svg>`,
+                questions: [
+                    {
+                        concept: "ความซับซ้อนของสายใยอาหารและความเสถียร",
+                        text: "เหตุใด 'ระบบนิเวศที่มีสายใยอาหารซับซ้อน' จึงมีความสามารถในการรักษาสมดุลและต้านทานการเปลี่ยนแปลงได้ดีกว่าระบบนิเวศที่มีห่วงโซ่อาหารเส้นเดี่ยว?",
+                        options: [
+                            "ก. เพราะสิ่งมีชีวิตกินอาหารชนิดเดียว ทำให้หาอาหารได้ง่ายขึ้น",
+                            "ข. เพราะหากสิ่งมีชีวิตชนิดหนึ่งลดลง ผู้ล่าก็ยังมีสิ่งมีชีวิตชนิดอื่นเป็นแหล่งอาหารทดแทนได้",
+                            "ค. เพราะไม่มีการถ่ายทอดพลังงานระหว่างสิ่งมีชีวิต",
+                            "ง. เพราะมีเฉพาะผู้ผลิตโดยไม่มีผู้บริโภค"
+                        ],
+                        ans: 1,
+                        exp: "สายใยอาหาร (Food Web) ที่ซับซ้อนแสดงถึงความหลากหลายทางชีวภาพ หากประชากรเหยื่อชนิดหนึ่งลดลง ผู้ล่าสามารถเปลี่ยนไปกินเหยื่อชนิดอื่นได้ ทำให้ระบบนิเวศไม่ล่มสลายง่าย"
+                    },
+                    {
+                        concept: "การวิเคราะห์ผลกระทบต่อเนื่อง (Trophic Cascade)",
+                        text: "ในสายใยอาหารนาข้าว: หากชาวบ้านล่า 'งูสิงและนกเค้าแมว' จนหมดไปจากพื้นที่อย่างรวดเร็ว ผลกระทบขั้นแรกและขั้นต่อมาที่จะเกิดขึ้นคืออะไร?",
+                        options: [
+                            "ก. หนูนาเพิ่มจำนวนขึ้นอย่างรวดเร็ว ➔ กัดกินต้นข้าวเสียหาย ผลผลิตตกต่ำ",
+                            "ข. ตั๊กแตนสูญพันธุ์ ➔ ข้าวเจริญเติบโตรวดเร็วกว่าปกติ",
+                            "ค. ปริมาณน้ำในนาข้าวจะระเหยเร็วขึ้นเป็น 2 เท่า",
+                            "ง. ต้นข้าวจะหยุดการสังเคราะห์ด้วยแสงทันที"
+                        ],
+                        ans: 0,
+                        exp: "เมื่อผู้ล่าระดับบน (งู, นกเค้าแมว) ถูกกำจัด ตัวควบคุมประชากรหนูนาจะหายไป ส่งผลให้ประชากรหนูนาพุ่งสูงเกินขีดจำกัด และกัดกินทำลายผลผลิตข้าวของชาวนา"
+                    },
+                    {
+                        concept: "ชนิดพันธุ์หลักค้ำจุน (Keystone Species)",
+                        text: "ในระบบนิเวศป่าชายเลน 'ปูก้ามดาบ' ช่วยขุดรูพรวนดินเลน ทำให้ออกซิเจนแทรกซึมลงสู่รากไม้ และกินเศษซากใบไม้ หากปูก้ามดาบสูญพันธุ์ ระบบนิเวศจะเสียหายอย่างหนัก ปูก้ามดาบนี้มีบทบาทตรงกับคำนิยามใด?",
+                        options: [
+                            "ก. ชนิดพันธุ์หลักค้ำจุน (Keystone Species)",
+                            "ข. ชนิดพันธุ์ต่างถิ่นรุกราน (Invasive Species)",
+                            "ค. ชนิดพันธุ์ผู้บุกเบิก (Pioneer Species)",
+                            "ง. ผู้ผลิตขั้นปฐมภูมิ (Primary Producer)"
+                        ],
+                        ans: 0,
+                        exp: "Keystone Species คือสิ่งมีชีวิตที่มีบทบาทสำคัญยิ่งต่อโครงสร้างและความอยู่รอดของระบบนิเวศ แม้จะมีชีวมวลหรือจำนวนไม่มาก แต่หากสูญหายไปจะทำให้ระบบนิเวศเสียสมดุลอย่างรุนแรง"
+                    },
+                    {
+                        concept: "การอ่านสายใยอาหาร",
+                        text: "หากในสายใยอาหารหนึ่ง: 'หญ้า ➔ กระต่าย ➔ หมาป่า' และ 'หญ้า ➔ ตั๊กแตน ➔ นก ➔ หมาป่า' สิ่งมีชีวิตชนิดใดจัดเป็นผู้บริโภคระดับสูงสุด (Apex Predator) ของสายใยอาหารนี้?",
+                        options: [
+                            "ก. หญ้า",
+                            "ข. กระต่าย",
+                            "ค. ตั๊กแตน",
+                            "ง. หมาป่า"
+                        ],
+                        ans: 3,
+                        exp: "หมาป่าเป็นสิ่งมีชีวิตที่อยู่ปลายทางของลูกศรทั้งหมดในสายใยอาหารนี้ และไม่มีสิ่งมีชีวิตอื่นในสายใยมาล่ามันต่อ จึงจัดเป็นผู้บริโภคอันดับสูงสุด (Top Predator/Apex Predator)"
+                    },
+                    {
+                        concept: "สมดุลแบบไดนามิก (Dynamic Equilibrium)",
+                        text: "เมื่อประชากรกวางในป่ามีจำนวนเพิ่มขึ้นมากเกินไป ปัจจัยตามธรรมชาติข้อใดจะช่วยดึงให้ประชากรกวางกลับคืนสู่สมดุลตามกลไกสายใยอาหาร?",
+                        options: [
+                            "ก. พืชอาหารลดลง สัตว์ผู้ล่ามีอาหารอุดมสมบูรณ์จึงขยายพันธุ์เพิ่มขึ้น ทำให้กวางถูกล่าและอดตายจนประชากรลดลง",
+                            "ข. กวางจะเปลี่ยนไปสังเคราะห์แสงเพื่อสร้างอาหารเอง",
+                            "ค. ปริมาณแสงแดดในป่าจะลดลงโดยอัตโนมัติ",
+                            "ง. ดินจะหยุดการดูดซึมน้ำฝนเพื่อขับไล่ฝูงกวาง"
+                        ],
+                        ans: 0,
+                        exp: "นี่คือกลไกการควบคุมประชากรตามธรรมชาติ (Negative Feedback loop): เมื่อเหยื่อเพิ่ม ➔ พืชลดลงและผู้ล่าเพิ่ม ➔ เหยื่อถูกล่าและขาดอาหารจนลดลงสู่ระดับสมดุล"
+                    }
+                ]
+            },
+            {
+                id: 6,
+                title: "พีระมิดทางนิเวศวิทยา (Ecological Pyramids)",
+                boss: "สฟิงซ์แห่งพีระมิด (Pyramid Sphinx)",
+                badge: "ว 1.1 ม.3/3",
+                qCount: 5,
+                bossDmg: 20,
+                playerDmg: 20,
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full"><polygon points="50,15 90,85 10,85" fill="#d97706" stroke="#fef08a" stroke-width="3"/><line x1="25" y1="60" x2="75" y2="60" stroke="#fef08a" stroke-width="2"/><line x1="38" y1="38" x2="62" y2="38" stroke="#fef08a" stroke-width="2"/><circle cx="50" cy="50" r="4" fill="#78350f"/></svg>`,
+                questions: [
+                    {
+                        concept: "พีระมิดจำนวนแบบหัวกลับ (Inverted Pyramid of Numbers)",
+                        text: "สถานการณ์ในธรรมชาติข้อใดต่อไปนี้ จะทำให้เขียน **พีระมิดจำนวน (Pyramid of Numbers)** ออกมาในลักษณะ **ฐานแคบยอดกว้าง (หัวกลับ)**?",
+                        options: [
+                            "ก. หญ้า 1,000 ต้น เลี้ยงตั๊กแตน 500 ตัว เลี้ยงกบ 50 ตัว",
+                            "ข. ต้นจามจุรีขนาดใหญ่ 1 ต้น มีหนอนผีเสื้ออาศัยกินใบ 300 ตัว และมีนกกินหนอน 5 ตัว",
+                            "ค. ข้าว 1 ไร่ เลี้ยงหนูนา 20 ตัว และมีงู 2 ตัว",
+                            "ง. สาหร่ายในบ่อ 10,000 เซลล์ เลี้ยงไรน้ำ 1,000 ตัว"
+                        ],
+                        ans: 1,
+                        exp: "พีระมิดจำนวนพิจารณาจำนวนตัว สิ่งมีชีวิตผู้ผลิตขนาดใหญ่เพียง 1 ต้น (เช่น ต้นจามจุรี) สามารถรองรับผู้บริโภคขนาดเล็กจำนวนมาก (หนอน 300 ตัว) ทำให้ฐานพีระมิดแคบกว่าชั้นถัดไป เกิดเป็นรูปหัวกลับ"
+                    },
+                    {
+                        concept: "พีระมิดมวลชีวภาพในระบบนิเวศทางทะเล",
+                        text: "ในมหาสมุทรเปิด พีระมิดมวลชีวภาพ (Pyramid of Biomass) ในช่วงเวลาใดเวลาหนึ่งอาจมีลักษณะหัวกลับ (มวลแพลงก์ตอนพืชน้อยกว่ามวลแพลงก์ตอนสัตว์) เกิดขึ้นได้อย่างไร?",
+                        options: [
+                            "ก. แพลงก์ตอนพืชมีขนาดเล็กและมีอัตราการแบ่งเซลล์สืบพันธุ์หมุนเวียน (Turnover rate) ที่รวดเร็วมาก จึงทดแทนชีวมวลที่ถูกกินไปได้ทัน",
+                            "ข. แพลงก์ตอนสัตว์สามารถสร้างพลังงานจากความร้อนใต้ทะเลได้เอง",
+                            "ค. แพลงก์ตอนพืชกินแพลงก์ตอนสัตว์เป็นอาหารในเวลากลางคืน",
+                            "ง. เครื่องมือวัดทางวิทยาศาสตร์เกิดข้อผิดพลาดเสมอในน้ำลึก"
+                        ],
+                        ans: 0,
+                        exp: "แพลงก์ตอนพืชมีอายุขัยสั้นและอัตราการเจริญเติบโตสูงมาก (High turnover rate) ทำให้มวลชีวภาพ ณ ขณะใดขณะหนึ่ง (Standing crop) น้อยกว่าผู้บริโภค แต่ผลผลิตรวมตลอดปีเพียงพอ"
+                    },
+                    {
+                        concept: "ทำไมพีระมิดพลังงานไม่เคยหัวกลับ",
+                        text: "เหตุใด **พีระมิดพลังงาน (Pyramid of Energy)** ในทุกระบบนิเวศบนโลก จึงต้องมีลักษณะเป็น **ฐานกว้างและยอดแหลม (หัวตั้ง) เสมอ** โดยไม่มีข้อยกเว้น?",
+                        options: [
+                            "ก. เพราะจำนวนผู้ผลิตมีมากกว่าสัตว์กินพืชเสมอในทุกพื้นที่",
+                            "ข. เพราะพลังงานลดลงเรื่อยๆ ในแต่ละลำดับขั้นการถ่ายทอดตามกฎอุณหพลศาสตร์และกฎ 10%",
+                            "ค. เพราะสารพิษถูกขับออกจนหมดในขั้นผู้บริโภค",
+                            "ง. เพราะพลังงานแสงอาทิตย์สูญหายไปในอวกาศทั้งหมด"
+                        ],
+                        ans: 1,
+                        exp: "ตามกฎการอนุรักษ์พลังงานและกฎ 10% พลังงานเคมีที่ถ่ายทอดจากระดับโภชนาการหนึ่งสู่อีกระดับหนึ่งจะลดลงเรื่อยๆ เสมอ (พลังงานส่วนใหญ่สูญเสียเป็นความร้อน) ทำให้พีระมิดพลังงานเป็นหัวตั้งเสมอ 100%"
+                    },
+                    {
+                        concept: "หน่วยของพีระมิดทางนิเวศวิทยา",
+                        text: "หน่วยวัดในข้อใดใช้สำหรับการสร้าง **พีระมิดพลังงาน (Pyramid of Energy)** ได้อย่างถูกต้อง?",
+                        options: [
+                            "ก. จำนวนตัว ต่อ ตารางเมตร (Individuals / m²)",
+                            "ข. กรัมน้ำหนักแห้ง ต่อ ตารางเมตร (g / m²)",
+                            "ค. กิโลแคลอรี ต่อ ตารางเมตร ต่อ ปี (kcal / m² / yr)",
+                            "ง. ลูกบาศก์เซนติเมตร ต่อ วินาที (cm³ / s)"
+                        ],
+                        ans: 2,
+                        exp: "พีระมิดพลังงานแสดง 'อัตราการไหลของพลังงานต่อหน่วยพื้นที่ในหนึ่งหน่วยเวลา' จึงใช้หน่วยของพลังงาน เช่น กิโลแคลอรี หรือ กิโลจูล ต่อตารางเมตรต่อปี (kcal/m²/yr หรือ kJ/m²/yr)"
+                    },
+                    {
+                        concept: "การเปรียบเทียบประเภทพีระมิด",
+                        text: "หากต้องการทราบความอุดมสมบูรณ์และปริมาณเนื้อเยื่ออินทรีย์ที่สะสมอยู่ในสิ่งมีชีวิตในแต่ละลำดับขั้น ควรเลือกใช้พีระมิดประเภทใดในการศึกษา?",
+                        options: [
+                            "ก. พีระมิดจำนวน (Pyramid of Numbers)",
+                            "ข. พีระมิดมวลชีวภาพ (Pyramid of Biomass)",
+                            "ค. พีระมิดการกระจายอายุ",
+                            "ง. พีระมิดความสูงของสิ่งมีชีวิต"
+                        ],
+                        ans: 1,
+                        exp: "พีระมิดมวลชีวภาพ (Pyramid of Biomass) คำนวณจากน้ำหนักแห้ง (Dry weight) ของสิ่งมีชีวิต ซึ่งสะท้อนมวลเนื้อเยื่ออินทรีย์จริงที่มีอยู่ ณ ขณะนั้นได้แม่นยำกว่าการนับจำนวนตัว"
+                    }
+                ]
+            },
+            {
+                id: 7,
+                title: "การถ่ายทอดพลังงานและกฎ 10%",
+                boss: "อสูรความร้อน 90% (Thermodynamic Fiend)",
+                badge: "ว 1.1 ม.3/3",
+                qCount: 5,
+                bossDmg: 20,
+                playerDmg: 20,
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full"><path d="M50,10 Q80,45 65,70 Q75,60 85,85 Q50,100 15,85 Q25,60 35,70 Q20,45 50,10" fill="#ea580c" stroke="#fbbf24" stroke-width="2"/><circle cx="42" cy="55" r="4" fill="#fef08a"/><circle cx="58" cy="55" r="4" fill="#fef08a"/></svg>`,
+                questions: [
+                    {
+                        concept: "กฎสิบเปอร์เซ็นต์ (10% Law)",
+                        text: "คำนวณพลังงาน: ในห่วงโซ่อาหาร 'หญ้า ➔ ตั๊กแตน ➔ กบ ➔ งู' หากหญ้ามีพลังงานสะสม 50,000 กิโลแคลอรี ตามกฎ 10% ของ Lindeman **งู** จะได้รับพลังงานสะสมประมาณกี่กิโลแคลอรี?",
+                        options: [
+                            "ก. 5,000 กิโลแคลอรี",
+                            "ข. 500 กิโลแคลอรี",
+                            "ค. 50 กิโลแคลอรี",
+                            "ง. 5 กิโลแคลอรี"
+                        ],
+                        ans: 2,
+                        exp: "ตามกฎ 10%: หญ้า (50,000 kcal) ➔ ตั๊กแตน (5,000 kcal) ➔ กบ (500 kcal) ➔ งู (50 kcal) พลังงานจะถูกส่งต่อไปขั้นละ 10% เท่านั้น"
+                    },
+                    {
+                        concept: "การสูญเสียพลังงาน 90%",
+                        text: "พลังงานอีกประมาณ 90% ที่ไม่ได้ถูกส่งต่อไปยังผู้บริโภคลำดับถัดไป สูญเสียไปในรูปใดหรือด้วยกระบวนการใดในสิ่งมีชีวิต?",
+                        options: [
+                            "ก. สูญเสียไปกับการสะสมเป็นสารพิษในเนื้อเยื่อ",
+                            "ข. สูญเสียไปในรูปพลังงานความร้อนจากกระบวนการหายใจระดับเซลล์ เมแทบอลิซึม กากอาหาร และการดำรงชีวิต",
+                            "ค. ถูกเปลี่ยนเป็นก๊าซออกซิเจนคืนสู่อากาศทั้งหมด",
+                            "ง. ถูกเปลี่ยนกลับไปเป็นพลังงานแสงอาทิตย์"
+                        ],
+                        ans: 1,
+                        exp: "พลังงาน 90% ถูกนำไปใช้ในกระบวนการหายใจระดับเซลล์ (Cellular respiration) การเจริญเติบโต การเคลื่อนไหว ปล่อยออกมาในรูปความร้อน และบางส่วนอยู่ในกากอาหารที่ย่อยไม่ได้"
+                    },
+                    {
+                        concept: "ข้อจำกัดความยาวของห่วงโซ่อาหาร",
+                        text: "เพราะเหตุใดในระบบนิเวศธรรมชาติ ห่วงโซ่อาหารจึงมักสิ้นสุดลงที่ผู้บริโภคลำดับที่ 4 หรือ 5 เท่านั้น และไม่สามารถยาวต่อไปเรื่อยๆ ได้?",
+                        options: [
+                            "ก. เพราะสิ่งมีชีวิตลำดับสูงๆ ขี้เกียจล่าเหยื่อ",
+                            "ข. เพราะพลังงานเหลือน้อยมากจนไม่เพียงพอต่อการดำรงชีวิตและการสืบพันธุ์ของผู้บริโภคลำดับถัดไป",
+                            "ค. เพราะผู้บริโภคระดับสูงไม่มีผู้ย่อยสลายคอยช่วยเหลือ",
+                            "ง. เพราะสัตว์ระดับสูงมีขนาดตัวเล็กเกินไป"
+                        ],
+                        ans: 1,
+                        exp: "เนื่องจากการสูญเสียพลังงานไปขั้นละ 90% เมื่อถึงผู้บริโภคลำดับที่ 4 หรือ 5 ปริมาณพลังงานที่เหลือรอดจะน้อยมากจนไม่คุ้มค่ากับการออกล่าเหยื่อเพื่อประทังชีวิต"
+                    },
+                    {
+                        concept: "การเลือกบริโภคเพื่อสิ่งแวดล้อม",
+                        text: "จากความรู้เรื่องกฎ 10% หากมนุษย์เลือกบริโภค 'ธัญพืชและถั่ว (พืช)' โดยตรง แทนการบริโภค 'เนื้อวัว' ที่กินธัญพืช จะส่งผลดีต่อประสิทธิภาพพลังงานของโลกอย่างไร?",
+                        options: [
+                            "ก. มนุษย์จะได้รับสารอาหารน้อยลงอย่างมาก",
+                            "ข. เป็นการลดขั้นตอนการสูญเสียพลังงาน 90% ทำให้ระบบนิเวศรองรับประชากรมนุษย์ได้มากขึ้นด้วยพื้นที่เพาะปลูกที่น้อยลง",
+                            "ค. ทำให้วัวสูญพันธุ์ไปจากระบบนิเวศ",
+                            "ง. ทำให้พืชไม่สามารถสังเคราะห์ด้วยแสงได้ทัน"
+                        ],
+                        ans: 1,
+                        exp: "การกินพืชโดยตรงทำให้มนุษย์เป็นผู้บริโภคอันดับ 1 ได้รับพลังงานมากกว่าการกินผ่านวัวถึง 10 เท่า ซึ่งช่วยประหยัดพื้นที่เกษตรและลดการสูญเสียพลังงานในห่วงโซ่อาหาร"
+                    },
+                    {
+                        concept: "การคำนวณชีวมวลและพลังงาน",
+                        text: "หากแพลงก์ตอนพืชสร้างพลังงานได้ 100,000 จูล มนุษย์กินปลากระพง (ซึ่งกินปลาเล็กที่กินแพลงก์ตอนสัตว์ที่กินแพลงก์ตอนพืช) มนุษย์จะได้รับพลังงานกี่จูล?",
+                        options: [
+                            "ก. 10,000 จูล",
+                            "ข. 1,000 จูล",
+                            "ค. 100 จูล",
+                            "ง. 10 จูล"
+                        ],
+                        ans: 3,
+                        exp: "แพลงก์ตอนพืช (100,000 J) ➔ แพลงก์ตอนสัตว์ (10,000 J) ➔ ปลาเล็ก (1,000 J) ➔ ปลากระพง (100 J) ➔ มนุษย์ (10 J)"
+                    }
+                ]
+            },
+            {
+                id: 8,
+                title: "การหมุนเวียนสารในระบบนิเวศ",
+                boss: "มังกรวัฏจักรสาร (Biogeochemical Drake)",
+                badge: "ว 1.1 ม.3/4",
+                qCount: 5,
+                bossDmg: 20,
+                playerDmg: 20,
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full"><path d="M20,30 Q50,5 80,30 Q95,60 70,85 Q50,95 25,80 Q5,50 20,30" fill="none" stroke="#06b6d4" stroke-width="3" stroke-dasharray="6,4"/><polygon points="50,25 75,65 25,65" fill="#0e7490"/><circle cx="50" cy="50" r="5" fill="#a5f3fc"/></svg>`,
+                questions: [
+                    {
+                        concept: "วัฏจักรคาร์บอน (Carbon Cycle)",
+                        text: "กระบวนการทางชีววิทยาข้อใดทำหน้าที่ **ดึงก๊าซคาร์บอนไดออกไซด์ (CO₂) ออกจากบรรยากาศ** เข้าสู่ห่วงโซ่อาหารของระบบนิเวศ?",
+                        options: [
+                            "ก. การหายใจระดับเซลล์ของสัตว์และพืช",
+                            "ข. การสังเคราะห์ด้วยแสงของพืชและผู้ผลิต",
+                            "ค. การเผาไหม้เชื้อเพลิงฟอสซิลของโรงงานอุตสาหกรรม",
+                            "ง. การย่อยสลายสารอินทรีย์โดยแบคทีเรีย"
+                        ],
+                        ans: 1,
+                        exp: "การสังเคราะห์ด้วยแสง (Photosynthesis) เป็นกระบวนการหลักที่ดึง CO₂ ในอากาศมาตรึงเป็นสารอินทรีย์ ส่วนการหายใจ การย่อยสลาย และการเผาไหม้ ล้วนเป็นกระบวนการปล่อย CO₂ คืนสู่บรรยากาศ"
+                    },
+                    {
+                        concept: "วัฏจักรไนโตรเจนและแบคทีเรียไรโซเบียม",
+                        text: "พืชไม่สามารถดูดซึมก๊าซไนโตรเจน (N₂) ในอากาศที่มีอยู่ถึง 78% ไปใช้ได้โดยตรง สิ่งมีชีวิตใดมีบทบาทสำคัญในการ **ตรึงไนโตรเจน (Nitrogen fixation)** เปลี่ยนเป็นสารประกอบที่พืชใช้ได้?",
+                        options: [
+                            "ก. ไวรัสในอากาศ",
+                            "ข. แบคทีเรียไรโซเบียม (Rhizobium) ในปมรากพืชตระกูลถั่ว",
+                            "ค. ไส้เดือนดินและแมลงสาบ",
+                            "ง. ยีสต์และราดำบนขนมปัง"
+                        ],
+                        ans: 1,
+                        exp: "แบคทีเรีย เช่น *Rhizobium* ในปมรากถั่ว และไซยาโนแบคทีเรีย สามารถตรึง N₂ จากอากาศเปลี่ยนเป็นแอมโมเนียม (NH₄⁺) และไนเตรต (NO₃⁻) ซึ่งพืชสามารถดูดซึมไปสร้างกรดอะมิโนและโปรตีนได้"
+                    },
+                    {
+                        concept: "วัฏจักรน้ำและการคายน้ำ",
+                        text: "ในวัฏจักรน้ำ น้ำจากป่าไม้เข้าสู่ชั้นบรรยากาศกลายเป็นเมฆฝนผ่านกระบวนการหลักใดของพืช?",
+                        options: [
+                            "ก. การคายน้ำ (Transpiration) ผ่านทางปากใบของพืช ร่วมกับการระเหย (Evaporation)",
+                            "ข. การสังเคราะห์ด้วยแสงในเวลากลางคืน",
+                            "ค. การดูดน้ำผ่านขนรากใต้ผิวดิน",
+                            "ง. การลำเลียงน้ำตาลผ่านท่อโฟลเอ็ม"
+                        ],
+                        ans: 0,
+                        exp: "กระบวนการคายน้ำของพืช (Transpiration) ร่วมกับการระเหยของน้ำจากผิวดินและแหล่งน้ำ (Evapotranspiration) เป็นกลไกหลักที่ส่งไอน้ำขึ้นสู่บรรยากาศจนควบแน่นเป็นเมฆ"
+                    },
+                    {
+                        concept: "การถ่ายทอดพลังงาน vs การหมุนเวียนสาร",
+                        text: "ข้อใดเปรียบเทียบระหว่าง **การถ่ายทอดพลังงาน** และ **การหมุนเวียนสาร** ในระบบนิเวศได้ถูกต้องที่สุด?",
+                        options: [
+                            "ก. พลังงานหมุนเวียนเป็นวัฏจักร ส่วนสารอาหารไหลไปในทิศทางเดียว",
+                            "ข. พลังงานถ่ายทอดไปในทิศทางเดียวและสูญเสียไปเรื่อยๆ ส่วนสารอาหารจะหมุนเวียนเป็นวัฏจักรกลับมาใช้ใหม่ได้ไม่รู้จบ",
+                            "ค. ทั้งพลังงานและสารอาหารจะสูญหายไปจากโลกหมดสิ้น",
+                            "ง. ทั้งสองอย่างไม่สามารถถ่ายทอดผ่านห่วงโซ่อาหารได้"
+                        ],
+                        ans: 1,
+                        exp: "หลักการสำคัญ: 'Energy flows, Matter cycles' พลังงานไหลทางเดียว (One-way flow) จากดวงอาทิตย์สู่สิ่งมีชีวิตและกระจายออกเป็นความร้อน ส่วนสสาร (C, N, H, O, P) จะหมุนเวียนเป็นวัฏจักรกลับมาใช้ซ้ำได้"
+                    },
+                    {
+                        concept: "กระบวนการ Denitrification",
+                        text: "แบคทีเรียกลุ่ม Denitrifying bacteria ทำหน้าที่สำคัญในวัฏจักรไนโตรเจนอย่างไร?",
+                        options: [
+                            "ก. เปลี่ยนสารประกอบไนเตรตในดินกลับคืนเป็นก๊าซไนโตรเจน (N₂) สู่ชั้นบรรยากาศ",
+                            "ข. สร้างน้ำตาลกลูโคสจากก๊าซไนโตรเจน",
+                            "ค. เปลี่ยนซากพืชให้กลายเป็นปิโตรเลียม",
+                            "ง. ช่วยให้รากพืชดูดซึมเหล็กได้เร็วขึ้น"
+                        ],
+                        ans: 0,
+                        exp: "Denitrification คือกระบวนการที่แบคทีเรียบางชนิดในสภาวะขาดออกซิเจนเปลี่ยนไนเตรต (NO₃⁻) กลับเป็นก๊าซไนโตรเจน (N₂) ลอยกลับสู่บรรยากาศ เพื่อรักษาสมดุลของวัฏจักรไนโตรเจน"
+                    }
+                ]
+            },
+            {
+                id: 9,
+                title: "ประชากรและการเปลี่ยนแปลง",
+                boss: "อสูรฝูงตั๊กแตนกลืนกิน (Swarm Queen)",
+                badge: "ว 1.1 ม.3/4",
+                qCount: 5,
+                bossDmg: 20,
+                playerDmg: 20,
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full"><path d="M30,35 Q50,15 70,35 Q85,60 50,85 Q15,60 30,35" fill="#65a30d" stroke="#bef264" stroke-width="2"/><ellipse cx="50" cy="50" rx="12" ry="25" fill="#3f6212"/><circle cx="45" cy="30" r="3" fill="#facc15"/><circle cx="55" cy="30" r="3" fill="#facc15"/></svg>`,
+                questions: [
+                    {
+                        concept: "สูตรคำนวณการเปลี่ยนแปลงขนาดประชากร",
+                        text: "สูตรคำนวณการเปลี่ยนแปลงขนาดประชากรของสิ่งมีชีวิตในแหล่งที่อยู่อาศัยหนึ่งข้อใดถูกต้อง?",
+                        options: [
+                            "ก. ขนาดประชากรเปลี่ยนแปลง = (อัตราการเกิด + การอพยพเข้า) - (อัตราการตาย + การอพยพออก)",
+                            "ข. ขนาดประชากรเปลี่ยนแปลง = (อัตราการเกิด + อัตราการตาย) × การอพยพเข้า",
+                            "ค. ขนาดประชากรเปลี่ยนแปลง = การอพยพออก - อัตราการเกิด",
+                            "ง. ขนาดประชากรเปลี่ยนแปลง = อัตราการเกิด ÷ อัตราการตาย"
+                        ],
+                        ans: 0,
+                        exp: "การเพิ่มประชากรมาจาก (เกิด + อพยพเข้า) ส่วนการลดลงของประชากรมาจาก (ตาย + อพยพออก) ผลต่างของทั้งสองกลุ่มคือการเปลี่ยนแปลงสุทธิของประชากร"
+                    },
+                    {
+                        concept: "ขีดความสามารถในการรองรับ (Carrying Capacity)",
+                        text: "คำว่า **Carrying Capacity (K)** ของระบบนิเวศหมายถึงอะไร?",
+                        options: [
+                            "ก. จำนวนสิ่งมีชีวิตที่น้อยที่สุดที่ทำให้สปีชีส์ไม่สูญพันธุ์",
+                            "ข. จำนวนประชากรสูงสุดของสิ่งมีชีวิตชนิดหนึ่งที่สภาพแวดล้อมและทรัพยากรในบริเวณนั้นสามารถรองรับได้โดยไม่เสื่อมโทรม",
+                            "ค. ความเร็วในการวิ่งหนีผู้ล่าของสัตว์กินพืช",
+                            "ง. ความสามารถในการผลิตก๊าซออกซิเจนของแพลงก์ตอนพืช"
+                        ],
+                        ans: 1,
+                        exp: "Carrying Capacity (K) คือขีดความสามารถสูงสุดของสภาพแวดล้อมในการรองรับประชากรสิ่งมีชีวิตชนิดใดชนิดหนึ่งได้อย่างยั่งยืน โดยถูกจำกัดด้วยอาหาร น้ำ พื้นที่ และปัจจัยทางนิเวศ"
+                    },
+                    {
+                        concept: "กราฟการเติบโตแบบ S-Curve vs J-Curve",
+                        text: "กราฟการเติบโตของประชากรแบบ **ลอจิสติก (Logistic Growth หรือ S-curve)** แตกต่างจากกราฟแบบเอกซ์โพเนนเชียล (J-curve) อย่างไร?",
+                        options: [
+                            "ก. กราฟ S-curve จะมีช่วงที่ประชากรชะลอตัวลงและคงที่เมื่อเข้าใกล้ขีดความสามารถในการรองรับ (K) ของสภาพแวดล้อม",
+                            "ข. กราฟ S-curve มีการเพิ่มจำนวนแบบก้าวกระโดดจนระบบนิเวศพังทลาย",
+                            "ค. กราฟ J-curve พบได้ในสิ่งมีชีวิตที่มีทรัพยากรจำกัดเท่านั้น",
+                            "ง. กราฟ S-curve ไม่เคยมีสิ่งมีชีวิตตายเลย"
+                        ],
+                        ans: 0,
+                        exp: "ในธรรมชาติ ประชากรมักเติบโตแบบ Logistic (รูปตัว S) เมื่อประชากรเพิ่มขึ้นจนทรัพยากรเริ่มจำกัด อัตราการเติบโตจะชะลอตัวลงและแกว่งตัวรอบๆ ค่า Carrying capacity (K)"
+                    },
+                    {
+                        concept: "ปัจจัยจำกัดความหนาแน่น (Density-dependent factors)",
+                        text: "ปัจจัยในข้อใดต่อไปนี้จัดเป็น **ปัจจัยที่ขึ้นอยู่กับความหนาแน่นของประชากร (Density-dependent factor)**?",
+                        options: [
+                            "ก. ภัยแล้งและน้ำท่วมฉับพลัน",
+                            "ข. การเกิดคลื่นยักษ์สึนามิ",
+                            "ค. การระบาดของโรคติดต่อและการแก่งแย่งอาหารภายในฝูง",
+                            "ง. การปะทุของภูเขาไฟ"
+                        ],
+                        ans: 2,
+                        exp: "Density-dependent factor คือปัจจัยที่ส่งผลรุนแรงขึ้นเมื่อประชากรหนาแน่น เช่น การแย่งอาหาร พื้นที่ทำรัง และการแพร่ระบาดของโรคติดต่อ ส่วนภัยพิบัติเป็น Density-independent factor"
+                    },
+                    {
+                        concept: "ความหนาแน่นของประชากร (Population Density)",
+                        text: "หากนักสำรวจพบกวาง 150 ตัว อาศัยอยู่ในป่าอนุรักษ์ขนาด 30 ตารางกิโลเมตร ความหนาแน่นของประชากรกวางในป่าแห่งนี้คือเท่าใด?",
+                        options: [
+                            "ก. 0.2 ตัว ต่อ ตารางกิโลเมตร",
+                            "ข. 5 ตัว ต่อ ตารางกิโลเมตร",
+                            "ค. 50 ตัว ต่อ ตารางกิโลเมตร",
+                            "ง. 4,500 ตัว ต่อ ตารางกิโลเมตร"
+                        ],
+                        ans: 1,
+                        exp: "ความหนาแน่นของประชากร = จำนวนประชากร ÷ พื้นที่ = 150 ตัว ÷ 30 ตร.กม. = 5 ตัวต่อตารางกิโลเมตร"
+                    }
+                ]
+            },
+            {
+                id: 10,
+                title: "การเปลี่ยนแปลงแทนที่ (Succession)",
+                boss: "โกเลมหินบุกเบิก (Succession Titan)",
+                badge: "ว 1.1 ม.3/4",
+                qCount: 5,
+                bossDmg: 20,
+                playerDmg: 20,
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full"><rect x="30" y="20" width="40" height="60" rx="8" fill="#475569" stroke="#94a3b8" stroke-width="3"/><path d="M40,50 L50,40 L60,50 L50,60 Z" fill="#22c55e"/><circle cx="42" cy="35" r="3" fill="#38bdf8"/><circle cx="58" cy="35" r="3" fill="#38bdf8"/></svg>`,
+                questions: [
+                    {
+                        concept: "การเปลี่ยนแปลงแทนที่แบบปฐมภูมิ (Primary Succession)",
+                        text: "ข้อใดเป็นตัวอย่างของ **การเปลี่ยนแปลงแทนที่แบบปฐมภูมิ (Primary Succession)** ที่ถูกต้อง?",
+                        options: [
+                            "ก. การฟื้นฟูของป่าเต็งรังหลังจากถูกไฟป่าเผาทำลาย",
+                            "ข. การเจริญเติบโตของวัชพืชในที่ดินรกร้างหลังการทำไร่เลื่อนลอย",
+                            "ค. การเกิดสิ่งมีชีวิตกลุ่มแรกบนเกาะหินลาวาภูเขาไฟที่พึ่งเย็นตัวกลางทะเล โดยไม่เคยมีดินหรือสิ่งมีชีวิตใดมาก่อน",
+                            "ง. การกลับมาของพืชน้ำในบ่อน้ำที่ถูกขุดลอกโคลน"
+                        ],
+                        ans: 2,
+                        exp: "Primary Succession เริ่มต้นในพื้นที่ว่างเปล่าที่ไม่เคยมีสิ่งมีชีวิตและไม่มีชั้นดินมาก่อน เช่น หินลาวาภูเขาไฟ ลานหิน หรือธารน้ำแข็งที่ละลาย"
+                    },
+                    {
+                        concept: "สิ่งมีชีวิตกลุ่มบุกเบิก (Pioneer Species)",
+                        text: "สิ่งมีชีวิตกลุ่มใดมักทำหน้าที่เป็น **สิ่งมีชีวิตกลุ่มบุกเบิก (Pioneer Species)** ในการเปลี่ยนแปลงแทนที่บนลานหินแห้งแล้ง?",
+                        options: [
+                            "ก. ไม้ยืนต้นขนาดใหญ่ เช่น ต้นสักและต้นยาง",
+                            "ข. ไลเคน (Lichen) และมอสส์ (Moss)",
+                            "ค. สัตว์กินเนื้อขนาดใหญ่ เช่น เสือโคร่ง",
+                            "ง. พืชน้ำและแหนเป็ด"
+                        ],
+                        ans: 1,
+                        exp: "ไลเคนสามารถปล่อยกรดออกมาย่อยสลายผิวหินให้ผุกร่อน เมื่อตายลงจะรวมกับเศษหินสร้างชั้นดินอินทรีย์บางๆ เปิดทางให้มอสส์และหญ้าเข้ามาเจริญเติบโตต่อไป"
+                    },
+                    {
+                        concept: "การเปลี่ยนแปลงแทนที่แบบทุติยภูมิ (Secondary Succession)",
+                        text: "เหตุใด 'การเปลี่ยนแปลงแทนที่แบบทุติยภูมิ' (เช่น พื้นที่ถูกไฟไหม้ป่า) จึงใช้เวลาสั้นกว่าและฟื้นตัวได้เร็วกว่าการเปลี่ยนแปลงแทนที่แบบปฐมภูมิ?",
+                        options: [
+                            "ก. เพราะสิ่งมีชีวิตเดิมไม่ยอมตายเลยแม้แต่ตัวเดียว",
+                            "ข. เพราะในพื้นที่ยังมีชั้นดิน แร่ธาตุ เมล็ดพืช และสปอร์เดิมหลงเหลืออยู่แล้ว",
+                            "ค. เพราะไม่มีสัตว์ผู้ล่าในบริเวณนั้น",
+                            "ง. เพราะอุณหภูมิของพื้นที่หลังไฟไหม้จะเย็นลงทันที"
+                        ],
+                        ans: 1,
+                        exp: "Secondary Succession ไม่ต้องเริ่มสร้างชั้นดินใหม่ตั้งแต่ศูนย์ เนื่องจากมีดิน ธาตุอาหาร และธนาคารเมล็ดพืช (Seed bank) อยู่ใต้ดิน ทำให้พืชฟื้นตัวกลับสู่สภาพป่าได้เร็วกว่ามาก"
+                    },
+                    {
+                        concept: "สังคมสิ่งมีชีวิตขั้นสุด (Climax Community)",
+                        text: "ลักษณะสำคัญของ **สังคมสิ่งมีชีวิตขั้นสุด (Climax Community)** ในกระบวนการเปลี่ยนแปลงแทนที่คือข้อใด?",
+                        options: [
+                            "ก. เป็นสังคมสิ่งมีชีวิตที่มีแต่หญ้าและไม่มีต้นไม้ใหญ่",
+                            "ข. เป็นสังคมสิ่งมีชีวิตที่มีความสมดุล โครงสร้างสายใยอาหารซับซ้อน และมีความเสถียรภาพสูงหากไม่มีสิ่งรบกวนรุนแรง",
+                            "ค. เป็นบริเวณที่มีการกลายพันธุ์ของสัตว์ตลอดเวลา",
+                            "ง. มีการเปลี่ยนชนิดพันธุ์เด่นทุกๆ 1 สัปดาห์"
+                        ],
+                        ans: 1,
+                        exp: "Climax Community คือจุดสิ้นสุดของการเปลี่ยนแปลงแทนที่ มีองค์ประกอบชีวภาพและกายภาพสมดุล มีชีวมวลและความหลากหลายสูง และจะคงอยู่ต่อไปอย่างมั่นคงหากไม่มีภัยพิบัติรุนแรง"
+                    },
+                    {
+                        concept: "การเรียงลำดับขั้นตอน Succession",
+                        text: "ลำดับการเปลี่ยนแปลงแทนที่ของพืชบนผืนดินรกร้างที่ถูกต้องตามลำดับกาลเวลาคือข้อใด?",
+                        options: [
+                            "ก. ไม้ยืนต้น ➔ ไม้พุ่ม ➔ หญ้าและวัชพืช ➔ ไลเคน",
+                            "ข. หญ้าและพืชล้มลุก ➔ ไม้พุ่มขนาดเล็ก ➔ ไม้เบิกนำโตเร็ว ➔ ไม้ยืนต้นสังคมสมบูรณ์",
+                            "ค. ไม้พุ่ม ➔ มอสส์ ➔ ไม้ยืนต้น ➔ พืชล้มลุก",
+                            "ง. ป่าดงดิบ ➔ ลานหิน ➔ ทะเลทราย ➔ ทุ่งหญ้า"
+                        ],
+                        ans: 1,
+                        exp: "ลำดับเริ่มจากพืชล้มลุกโตเร็ว (หญ้า) ➔ ไม้พุ่มขนาดเล็ก ➔ ไม้ยืนต้นเบิกนำชอบแสง (เช่น กระถิน) ➔ ไม้ยืนต้นทนร่มและไม้ใหญ่สังคมสมบูรณ์"
+                    }
+                ]
+            },
+            {
+                id: 11,
+                title: "ความสมดุลของระบบนิเวศ (Ecosystem Balance)",
+                boss: "พญาอสูรสมดุลธรรมชาติ (Equilibrium Sovereign)",
+                badge: "ว 1.1 ม.3/5",
+                qCount: 5,
+                bossDmg: 20,
+                playerDmg: 20,
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full"><circle cx="50" cy="50" r="38" fill="none" stroke="#10b981" stroke-width="3"/><path d="M50,12 L50,88" stroke="#10b981" stroke-width="2"/><circle cx="50" cy="32" r="14" fill="#047857"/><circle cx="50" cy="68" r="14" fill="#065f46"/><circle cx="50" cy="32" r="5" fill="#a7f3d0"/><circle cx="50" cy="68" r="5" fill="#a7f3d0"/></svg>`,
+                questions: [
+                    {
+                        concept: "สมดุลของระบบนิเวศ (Ecosystem Balance)",
+                        text: "ข้อใดอธิบายสภาวะ 'สมดุลแบบไดนามิก (Dynamic Equilibrium)' ของระบบนิเวศธรรมชาติได้ถูกต้องที่สุด?",
+                        options: [
+                            "ก. สภาวะที่จำนวนสิ่งมีชีวิตทุกชนิดต้องเท่ากันเป๊ะตลอดทั้งปีโดยไม่มีการเปลี่ยนแปลง",
+                            "ข. สภาวะที่มีปฏิสัมพันธ์และการหมุนเวียนสารที่ต่อเนื่อง แม้จะมีการเปลี่ยนแปลงประชากรขึ้นลงบ้างแต่ระบบสามารถปรับตัวกลับคืนสู่สภาวะปกติได้เอง",
+                            "ค. สภาวะที่มีเฉพาะผู้ผลิตและผู้ย่อยสลาย โดยไม่มีสัตว์ผู้ล่าในระบบ",
+                            "ง. สภาวะที่ไม่มีมนุษย์หรือสารอินทรีย์ใดๆ อยู่ในพื้นที่นั้นเลย"
+                        ],
+                        ans: 1,
+                        exp: "สมดุลของระบบนิเวศไม่ใช่สภาวะนิ่งสนิท แต่เป็นสมดุลเชิงพลวัต (Dynamic Equilibrium) ที่ประชากรและสารอาหารหมุนเวียนแกว่งตัวอยู่ในช่วงที่เหมาะสม และมีกลไกตรวจสอบย้อนกลับ (Feedback) คืนสู่สมดุลได้"
+                    },
+                    {
+                        concept: "ดัชนีชีวภาพบ่งชี้คุณภาพน้ำ (Bioindicators)",
+                        text: "นักเรียนตรวจพบ 'ตัวอ่อนแมลงชีปะขาวและตัวอ่อนแมลงหนอนปลอกน้ำ' จำนวนมากในลำธารต้นน้ำ การพบสิ่งมีชีวิตกลุ่มนี้บ่งชี้คุณภาพสิ่งแวดล้อมทางกายภาพอย่างไร?",
+                        options: [
+                            "ก. แหล่งน้ำนั้นเน่าเสียรุนแรง มีสารอินทรีย์เจือปนสูงมาก",
+                            "ข. แหล่งน้ำนั้นมีปริมาณออกซิเจนละลายน้ำ (DO) สูง น้ำใสสะอาด และมลพิษต่ำ",
+                            "ค. แหล่งน้ำนั้นมีสารเคมีกำจัดแมลงและโลหะหนักปนเปื้อนเกินมาตรฐาน",
+                            "ง. แหล่งน้ำนั้นมีอุณหภูมิสูงเกิน 60 องศาเซลเซียส"
+                        ],
+                        ans: 1,
+                        exp: "ตัวอ่อนแมลงชีปะขาวและแมลงหนอนปลอกน้ำจัดเป็น Bioindicators (ดัชนีทางชีวภาพ) ที่ไวต่อมลพิษ ต้องการออกซิเจนละลายน้ำ (DO) สูงมาก หากพบพวกมันแสดงว่าน้ำสะอาดและระบบนิเวศสมบูรณ์"
+                    },
+                    {
+                        concept: "จุดพลิกผันทางนิเวศวิทยา (Ecological Tipping Point)",
+                        text: "คำว่า 'จุดพลิกผันทางนิเวศวิทยา (Ecological Tipping Point)' มีความหมายตรงกับสถานการณ์ใด?",
+                        options: [
+                            "ก. วันที่ฤดูฝนเปลี่ยนเป็นฤดูหนาวตามปฏิทิน",
+                            "ข. ระดับขีดจำกัดของการรบกวนที่หากระบบนิเวศถูกทำลายเกินจุดนี้ จะเกิดการล่มสลายและไม่สามารถฟื้นฟูกลับสู่สภาพเดิมได้อีกต่อไป",
+                            "ค. จุดที่มีการแลกเปลี่ยนพลังงานระหว่างพืชกับแสงอาทิตย์ได้ 100%",
+                            "ง. ช่วงเวลาที่สัตว์กินเนื้อออกล่าเหยื่อมากที่สุดในรอบวัน"
+                        ],
+                        ans: 1,
+                        exp: "Ecological Tipping Point คือจุดวิกฤตที่หากระบบนิเวศถูกผลกระทบเกินขีดความสามารถในการฟื้นตัว (Resilience) ระบบจะเปลี่ยนสถานะอย่างถาวรจนโครงสร้างเดิมพังทลาย เช่น ป่าฝนเปลี่ยนเป็นทุ่งหญ้าสะวันนาแห้งแล้ง"
+                    },
+                    {
+                        concept: "การสร้างฝายชะลอน้ำเพื่อรักษาสมดุลป่าต้นน้ำ",
+                        text: "การสร้าง 'ฝายชะลอน้ำตามแนวพระราชดำริ (Check Dam)' ในพื้นที่ป่าต้นน้ำ ช่วยรักษาสมดุลของระบบนิเวศได้อย่างไร?",
+                        options: [
+                            "ก. ช่วยกักเก็บตะกอนดิน ชะลอการไหลเชี่ยวของน้ำ เพิ่มความชุ่มชื้นให้หน้าดินและป่าไม้โดยรอบ",
+                            "ข. ช่วยกำจัดปลาพื้นเมืองและเปลี่ยนป่าให้เป็นเขื่อนคอนกรีตขนาดใหญ่",
+                            "ค. เร่งให้น้ำป่าไหลหลากลงสู่เมืองให้เร็วขึ้นเพื่อระบายน้ำ",
+                            "ง. ทำให้อุณหภูมิของป่าลดลงจนเกิดหิมะตก"
+                        ],
+                        ans: 0,
+                        exp: "ฝายชะลอน้ำช่วยดักตะกอน ดินไม่ถูกชะล้าง ลดความรุนแรงของกระแสน้ำ และช่วยให้น้ำซึมลงสู่ชั้นน้ำบาดาล เพิ่มความชุ่มชื้นแก่ป่าไม้รอบข้างตลอดทั้งปี"
+                    },
+                    {
+                        concept: "ผลกระทบของการทำลายสิ่งมีชีวิตชนิดเด่น",
+                        text: "หากในป่าแห่งหนึ่ง ประชากร 'ต้นไทร (Ficus)' ซึ่งติดผลตลอดทั้งปีถูกตัดโค่นจนหมด จะส่งผลกระทบต่อสมดุลระบบนิเวศอย่างไร?",
+                        options: [
+                            "ก. นกและสัตว์กินผลไม้ เช่น ชะนีและค้างคาว จะขาดแคลนอาหารในช่วงหน้าแล้งจนประชากรดิ่งลงอย่างหนัก",
+                            "ข. ปริมาณฝนจะตกเพิ่มขึ้น 5 เท่าทันที",
+                            "ค. สัตว์ผู้ล่าจะเปลี่ยนไปกินหินและดินแทนผลไม้",
+                            "ง. ไม่มีผลกระทบใดๆ เพราะสัตว์สามารถกินใบไม้แห้งแทนได้ทั้งหมด"
+                        ],
+                        ans: 0,
+                        exp: "ต้นไทรเป็น 'พืชค้ำจุนหลัก (Keystone plant)' ที่ออกผลนอกฤดูกาล เป็นแหล่งอาหารสำคัญของนกและสัตว์เลี้ยงลูกด้วยนมในยามหน้าแล้ง การสูญเสียต้นไทรจึงส่งผลกระทบลูกโซ่ต่อสัตว์ป่าจำนวนมาก"
+                    }
+                ]
+            },
+            {
+                id: 12,
+                title: "มนุษย์กับวิกฤตสิ่งแวดล้อมโลก (FINAL BOSS)",
+                boss: "ไคจูมหาวิบัติแอนโทรโปซีน (Anthropocene Leviathan)",
+                badge: "ว 1.1 ม.3/5 - ม.3/6 (บอสใหญ่ 10 ข้อ)",
+                qCount: 10,
+                bossDmg: 10, // 10 correct answers = 100 boss HP
+                playerDmg: 15, // wrong answer penalties
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full"><polygon points="50,5 92,30 82,85 50,98 18,85 8,30" fill="#450a0a" stroke="#dc2626" stroke-width="3.5"/><circle cx="50" cy="55" r="16" fill="#7f1d1d" stroke="#ef4444" stroke-width="2"/><circle cx="50" cy="55" r="7" fill="#facc15" class="animate-ping"/><polygon points="35,36 44,40 35,44" fill="#fef08a"/><polygon points="65,36 56,40 65,44" fill="#fef08a"/><path d="M25,82 Q50,70 75,82" stroke="#f87171" stroke-width="3" fill="none"/></svg>`,
+                questions: [
+                    {
+                        concept: "1. เอเลี่ยนสปีชีส์: วิกฤตปลาหมอคางดำ",
+                        text: "วิกฤตการแพร่ระบาดของ **'ปลาหมอคางดำ (Blackchin Tilapia)'** ในแหล่งน้ำชายฝั่งและแม่น้ำของไทย ส่งผลกระทบเชิงระบบนิเวศและห่วงโซ่อาหารอย่างไรจนควบคุมได้ยาก?",
+                        options: [
+                            "ก. เป็นสัตว์กินพืชอย่างเดียว ทำให้สาหร่ายในน้ำหมดไป",
+                            "ข. ปรับตัวได้ทั้งน้ำจืด น้ำกร่อย น้ำเค็ม ขยายพันธุ์เร็ว อมไข่ในปาก และกินลูกปลา-ไข่สัตว์น้ำพื้นเมืองจนระบบนิเวศสูญเสียความหลากหลาย",
+                            "ค. ช่วยกำจัดวัชพืชน้ำและเพิ่มรายได้ให้ชาวประมงพื้นบ้านอย่างยั่งยืน",
+                            "ง. ปล่อยสารเคมีเรืองแสงทำให้น้ำมีอุณหภูมิสูงขึ้นจนปลาอื่นทนไม่ได้"
+                        ],
+                        ans: 1,
+                        exp: "ปลาหมอคางดำเป็น Invasive Alien Species ที่มีความทนทานต่อความเค็มหลากหลาย อัตราการรอดของลูกปลาสูงเพราะพ่อปลาอมไข่ในปาก กินอาหารไม่เลือก ทำลายสายใยอาหารสัตว์น้ำพื้นเมืองของไทยอย่างรุนแรง"
+                    },
+                    {
+                        concept: "2. วิกฤตฝุ่น PM2.5 และการเผาชีวมวล",
+                        text: "การเผาชีวมวลทางการเกษตรและไฟป่าก่อให้เกิด **ฝุ่นละออง PM2.5 และ Black Carbon** ปรากฏการณ์นี้ส่งผลกระทบต่อปัจจัยทางกายภาพและชีวภาพของระบบนิเวศอย่างไร?",
+                        options: [
+                            "ก. ฝุ่นช่วยเร่งให้อัตราการสังเคราะห์ด้วยแสงของพืชเพิ่มขึ้น 3 เท่า",
+                            "ข. ฝุ่นและควันบดบังแสงแดด ลดประสิทธิภาพการสังเคราะห์ด้วยแสงของพืช และทำลายจุลินทรีย์หน้าดินจากความร้อนสะสม",
+                            "ค. ช่วยเพิ่มปริมาณก๊าซออกซิเจนในชั้นบรรยากาศอย่างรวดเร็ว",
+                            "ง. ลดการเกิดฝนกรดและทำให้น้ำในดินมีความเป็นกลางมากขึ้น"
+                        ],
+                        ans: 1,
+                        exp: "ฝุ่น PM2.5 และควันไฟป่าบดบังรังสีดวงอาทิตย์ (Global dimming effect) ฝุ่นเกาะบนผิวใบอุดตันปากใบพืช ลดการสังเคราะห์แสง และความร้อนจากการเผาไหม้ทำลายหน้าดิน แร่ธาตุ และจุลินทรีย์ที่เป็นประโยชน์"
+                    },
+                    {
+                        concept: "3. ปรากฏการณ์ปะการังฟอกขาว (Coral Bleaching)",
+                        text: "ภาวะโลกร้อนทำให้อุณหภูมิน้ำทะเลสูงขึ้นจนเกิด **'ปะการังฟอกขาว'** กลไกทางชีววิทยาข้อใดอธิบายปรากฏการณ์นี้ได้อย่างถูกต้องตามหลักความสัมพันธ์?",
+                        options: [
+                            "ก. ตัวปะการังขับสาหร่ายซูแซนเทลลี (Zooxanthellae) ที่อยู่ร่วมกันแบบพึ่งพากัน (+,+) ออกไป ทำให้ขาดสารอาหารและเห็นโครงหินปูนสีขาว",
+                            "ข. ปะการังเปลี่ยนสีเพื่อพรางตัวจากปลาผู้ล่าในทะเลลึก",
+                            "ค. สาหร่ายกินเนื้อเยื่อปะการังจนหมดกลายเป็นภาวะปรสิต",
+                            "ง. แบคทีเรียในน้ำทะเลช่วยสร้างสีขาวเคลือบผิวปะการังเพื่อสะท้อนความร้อน"
+                        ],
+                        ans: 0,
+                        exp: "ปะการังกับสาหร่าย Zooxanthellae อยู่ร่วมกันแบบภาวะพึ่งพากัน (+,+) เมื่อน้ำทะเลร้อนจัด สาหร่ายเกิดความเครียดและหลั่งสารพิษ ปะการังจึงขับสาหร่ายออก ทำให้สูญเสียแหล่งอาหารหลัก (90%) จนเหลือแต่โครงหินปูนสีขาวและอาจตายในที่สุด"
+                    },
+                    {
+                        concept: "4. ไมโครพลาสติก & Biomagnification",
+                        text: "ในระบบนิเวศทางทะเล: 'แพลงก์ตอน ➔ ปลาเล็ก ➔ ปลาทูน่า ➔ มนุษย์' ตามหลัก **Biomagnification** สารพิษที่เกาะบนไมโครพลาสติกจะส่งผลกระทบอย่างไร?",
+                        options: [
+                            "ก. แพลงก์ตอนจะมีความเข้มข้นของสารพิษในเนื้อเยื่อสูงที่สุดเพราะอยู่ต้นโซ่อาหาร",
+                            "ข. สารพิษจะเจือจางหายไปจนเหลือ 0% เมื่อถึงมนุษย์",
+                            "ค. มนุษย์และสัตว์ผู้ล่าระดับสูงสุดจะตรวจพบสารพิษตกค้างสะสมเข้มข้นสูงสุดในร่างกาย",
+                            "ง. ทุกระดับสิ่งมีชีวิตจะมีสารพิษสะสมในปริมาณเท่ากันทุกตัว"
+                        ],
+                        ans: 2,
+                        exp: "Biomagnification (การขยายตัวทางชีวภาพของสารพิษ): สารเคมีที่ไม่ละลายน้ำและย่อยสลายยากจะสะสมในเนื้อเยื่อไขมันและเพิ่มความเข้มข้นทวีคูณตามลำดับขั้นการกิน มนุษย์ที่เป็น Apex Predator จึงเสี่ยงสะสมสารพิษเข้มข้นที่สุด"
+                    },
+                    {
+                        concept: "5. เขตมรณะ (Dead Zone) จาก Eutrophication",
+                        text: "ในอ่าวไทยตอนใน การปล่อยน้ำทิ้งชุมชนและปุ๋ยเกษตรปริมาณมากทำให้เกิด 'ปรากฏการณ์น้ำเน่าขยายวงกว้าง (Dead Zone)' ปัจจัยทางกายภาพใดที่ **ลดต่ำลงจนทำให้สัตว์น้ำหน้าดินตายหมู่**?",
+                        options: [
+                            "ก. ปริมาณก๊าซคาร์บอนมอนอกไซด์ในน้ำ",
+                            "ข. ปริมาณออกซิเจนที่ละลายในน้ำ (Dissolved Oxygen : DO)",
+                            "ค. ค่าความเค็มของน้ำทะเล",
+                            "ง. ความดันบรรยากาศเหนือน้ำ"
+                        ],
+                        ans: 1,
+                        exp: "ปุ๋ยไนโตรเจนและฟอสฟอรัสกระตุ้นสาหร่ายบลูม เมื่อสาหร่ายตาย แบคทีเรียย่อยสลายจะใช้ออกซิเจนมหาศาล ทำให้ค่า DO (Dissolved Oxygen) ต่ำกว่า 2 mg/L เกิดสภาวะ Hypoxia หรือ 'Dead Zone' สัตว์หน้าดินที่ไม่สามารถว่ายหนีได้ทันจึงขาดอากาศตาย"
+                    },
+                    {
+                        concept: "6. การแบ่งแยกถิ่นอาศัย (Habitat Fragmentation)",
+                        text: "การสร้างถนนตัดผ่าใจกลางผืนป่าธรรมชาติทำให้เกิด **'การแบ่งแยกถิ่นอาศัยเป็นหย่อมย่อย (Habitat Fragmentation)'** ปัญหานี้ส่งผลกระทบต่อความหลากหลายทางชีวภาพอย่างไร?",
+                        options: [
+                            "ก. สัตว์ป่าข้ามถนนได้ง่ายขึ้นทำให้เกิดการผสมข้ามสายพันธุ์ใหม่ๆ",
+                            "ข. เกิดปรากฏการณ์ขอบป่า (Edge effect) กีดขวางการอพยพหาคู่ผสมพันธุ์ และลดความหลากหลายทางพันธุกรรมจนสัตว์เสี่ยงสูญพันธุ์",
+                            "ค. เพิ่มพื้นที่ป่าสมบูรณ์ให้ขยายตัวกว้างขึ้นเป็น 2 เท่า",
+                            "ง. ช่วยป้องกันไม่ให้พรานป่าและโรคระบาดเข้าไปในป่า"
+                        ],
+                        ans: 1,
+                        exp: "การตัดถนนแบ่งป่าออกเป็นหย่อมเล็กๆ ขัดขวางเส้นทางหากิน เกิด Edge effect (ลม แสง และความแห้งแล้งรุกรานขอบป่า) และทำให้ประชากรสัตว์ถูกตัดขาด เกิด Inbreeding depression (การผสมเลือดชิด) จนประชากรเสื่อมถอย"
+                    },
+                    {
+                        concept: "7. คาร์บอนสีน้ำเงิน (Blue Carbon)",
+                        text: "เหตุใด 'ป่าชายเลนและแหล่งหญ้าทะเล (Blue Carbon)' จึงได้รับการยกย่องว่า **กักเก็บคาร์บอนได้มีประสิทธิภาพและยาวนานกว่าป่าบกหลายเท่า**?",
+                        options: [
+                            "ก. เพราะพืชในป่าชายเลนไม่เคยคายก๊าซคาร์บอนไดออกไซด์เลยตลอดชีวิต",
+                            "ข. เพราะดินเลนใต้น้ำมีสภาพไร้ออกซิเจน (Anaerobic) ทำให้ซากพืชย่อยสลายช้ามาก คาร์บอนจึงถูกกักขังใต้ตะกอนดินได้นานนับพันปี",
+                            "ค. เพราะใบของต้นโกงกางทำจากพลาสติกชีวภาพที่ไม่ผุพัง",
+                            "ง. เพราะน้ำทะเลดูดซับคาร์บอนแล้วเปลี่ยนเป็นเกลือแกงทั้งหมด"
+                        ],
+                        ans: 1,
+                        exp: "Blue Carbon Ecosystems มีอัตราการสะสมคาร์บอนในดินตะกอนสูงมาก เนื่องจากสภาวะแช่น้ำและขาดออกซิเจน ยับยั้งการทำงานของจุลินทรีย์ย่อยสลาย ทำให้คาร์บอนถูกกักเก็บไว้ในชั้นดินเลนได้นานหลายร้อยถึงหลายพันปี"
+                    },
+                    {
+                        concept: "8. วิกฤตประชากรผึ้งลดลง (Colony Collapse Disorder)",
+                        text: "การสูญเสียประชากรผึ้งและแมลงผสมเกสรทั่วโลกอันเนื่องมาจากการใช้ยาฆ่าแมลงเคมี ส่งผลกระทบสะเทือนต่อระบบนิเวศและมนุษยชาติอย่างไร?",
+                        options: [
+                            "ก. พืชดอกและพืชผลทางการเกษตร 3 ใน 4 ของโลกขาดผู้ช่วยผสมเกสร ทำให้ผลผลิตอาหารลดลงและสายใยอาหารปั่นป่วน",
+                            "ข. ทำให้ดอกไม้เปลี่ยนไปสังเคราะห์แสงด้วยระบบรากแทน",
+                            "ค. ปริมาณน้ำผึ้งในตลาดลดลงเพียงอย่างเดียวโดยไม่มีผลต่อสิ่งแวดล้อม",
+                            "ง. มดและปลวกจะวิวัฒนาการมาบินผสมเกสรแทนผึ้งได้ทันที 100%"
+                        ],
+                        ans: 0,
+                        exp: "ผึ้งเป็น Keystone Pollinator พืชผลทางการเกษตรที่มนุษย์บริโภคมากกว่า 75% พึ่งพาแมลงผสมเกสร หากผึ้งล่มสลายจะส่งผลให้พืชป่าและพืชอาหารไม่ติดผล กระทบต่อความมั่นคงทางอาหารของโลกและสัตว์กินพืชทั้งหมด"
+                    },
+                    {
+                        concept: "9. การฟื้นฟูธรรมชาติด้วย Apex Predator (Rewilding)",
+                        text: "การปล่อย 'หมาป่า' คืนสู่ผืนป่าอุทยานเยลโลว์สโตนหลังสูญหายไปนาน ทำให้ประชากรกวางลดลงและไม่กล้าเล็มหญ้าริมแม่น้ำ ส่งผลให้ป่าริมน้ำฟื้นตัว นกและบีเวอร์กลับมา บทเรียนนี้สะท้อนหลักการใด?",
+                        options: [
+                            "ก. การควบคุมระบบนิเวศจากบนลงล่าง (Top-Down Control) โดยผู้ล่าระดับสูงสุดช่วยฟื้นฟูสมดุลสายใยอาหารทั้งหมด",
+                            "ข. ภาวะการแก่งแย่งแข่งขันระหว่างผู้ผลิตกับผู้บริโภค",
+                            "ค. ความล้มเหลวของการจัดการสัตว์ป่าโดยมนุษย์",
+                            "ง. การเปลี่ยนแปลงแทนที่แบบปฐมภูมิบนก้อนหิน"
+                        ],
+                        ans: 0,
+                        exp: "นี่คือตัวอย่างคลาสสิกของ Trophic Cascade และ Top-Down Control: Apex Predator ไม่เพียงแค่ล่าเหยื่อ แต่ยังเปลี่ยนพฤติกรรมของสัตว์กินพืช (Ecology of fear) ส่งผลให้พืชริมน้ำฟื้นตัว ป้องกันตลิ่งพัง และคืนความสมบูรณ์ให้ทั้งระบบนิเวศ"
+                    },
+                    {
+                        concept: "10. โมเดลเศรษฐกิจ BCG & การพัฒนาที่ยั่งยืน",
+                        text: "แนวคิด **'โมเดลเศรษฐกิจ BCG (Bio-Circular-Green Economy)'** นำหลักการทางนิเวศวิทยาเรื่องใดมาประยุกต์ใช้เพื่อแก้ปัญหาวิกฤตสิ่งแวดล้อมอย่างยั่งยืนที่สุด?",
+                        options: [
+                            "ก. การเร่งใช้เชื้อเพลิงฟอสซิลให้หมดเพื่อเปลี่ยนเป็นพลังงานนิวเคลียร์ทั้งหมด",
+                            "ข. การเลียนแบบ 'วัฏจักรสารในระบบนิเวศ (Circular Flow)' นำวัสดุเหลือทิ้งกลับมาใช้ซ้ำ ลดของเสียเป็นศูนย์ (Zero Waste) ควบคู่กับพลังงานสะอาด",
+                            "ค. การห้ามทำการเกษตรและอุตสาหกรรมทุกรูปแบบทั่วประเทศ",
+                            "ง. การปล่อยสารเคมีลงสู่ทะเลเพื่อเร่งการเกิดสายใยอาหารใหม่"
+                        ],
+                        ans: 1,
+                        exp: "BCG Model ถอดรหัสมาจากระบบนิเวศธรรมชาติ: Bio (ใช้ประโยชน์จากความหลากหลายทางชีวภาพอย่างคุ้มค่า), Circular (หมุนเวียนทรัพยากรและของเสียกลับมาใช้ใหม่เหมือนวัฏจักรสาร), และ Green (ลดมลพิษ รักษาสมดุลคาร์บอนอย่างยั่งยืน)"
+                    }
+                ]
+            }
+        ];
+
+        /* ==========================================================================
+           3. APPLICATION CORE LOGIC (STATE & LOCAL STORAGE)
+           ========================================================================== */
+        const STORAGE_KEY = "ECO_GUARDIAN_M3_12STAGES_DATA";
+
+        class EcosystemApp {
+            constructor() {
+                this.state = this.loadState();
+                this.currentStageId = 1;
+                this.currentQuestionIndex = 0;
+                this.playerHp = 100;
+                this.bossHp = 100;
+                this.currentStageCorrectCount = 0;
+            }
+
+            // Load saved state or set defaults
+            loadState() {
+                const defaultState = {
+                    student: null, // { name: "", classRoom: "", no: "" }
+                    unlockedStage: 1, // 1 to 12
+                    scores: {}, // { 1: 5, ..., 12: 10 }
+                    completed: {} // { 1: true, ... }
+                };
+                try {
+                    const raw = localStorage.getItem(STORAGE_KEY);
+                    if (raw) {
+                        return Object.assign(defaultState, JSON.parse(raw));
+                    }
+                } catch (e) {
+                    console.error("Storage load error", e);
+                }
+                return defaultState;
+            }
+
+            saveState() {
+                try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state));
+                } catch (e) {
+                    console.error("Storage save error", e);
+                }
+            }
+
+            init() {
+                if (this.state.student && this.state.student.name) {
+                    this.showStageMap();
+                } else {
+                    this.showScreen('screen-auth');
+                }
+            }
+
+            showScreen(screenId) {
+                const screens = ['screen-auth', 'screen-map', 'screen-battle', 'screen-cleared', 'screen-gameover', 'screen-failed-criteria', 'screen-certificate'];
+                screens.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.classList.add('hidden');
+                });
+                const target = document.getElementById(screenId);
+                if (target) target.classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                this.updateNavProfile();
+            }
+
+            handleRegister(e) {
+                e.preventDefault();
+                const name = document.getElementById('input-name').value.trim();
+                const classRoom = document.getElementById('input-class').value.trim();
+                const no = document.getElementById('input-no').value.trim();
+
+                if (!name) return;
+
+                this.state.student = { name, classRoom, no };
+                this.saveState();
+                soundManager.playVictory();
+                this.showStageMap();
+            }
+
+            updateNavProfile() {
+                const pill = document.getElementById('nav-player-pill');
+                if (this.state.student && this.state.student.name) {
+                    pill.classList.remove('hidden');
+                    pill.classList.add('flex');
+                    document.getElementById('nav-player-name').textContent = this.state.student.name;
+                    document.getElementById('nav-score').textContent = `${this.getTotalScore()} / 65`;
+                } else {
+                    pill.classList.add('hidden');
+                }
+            }
+
+            getTotalScore() {
+                let total = 0;
+                for (let i = 1; i <= 12; i++) {
+                    total += (this.state.scores[i] || 0);
+                }
+                return total;
+            }
+
+            showStageMap() {
+                this.showScreen('screen-map');
+                
+                // Update Student Banner Info
+                document.getElementById('map-player-display').textContent = this.state.student ? this.state.student.name : "ผู้พิทักษ์";
+                document.getElementById('map-meta-display').textContent = this.state.student ? `(ชั้น ${this.state.student.classRoom} • เลขที่ ${this.state.student.no})` : "";
+                document.getElementById('map-total-score').textContent = `${this.getTotalScore()} / 65`;
+
+                // Render Stage Cards
+                const grid = document.getElementById('stages-grid');
+                grid.innerHTML = '';
+
+                STAGES_DATA.forEach(stage => {
+                    const isUnlocked = stage.id <= this.state.unlockedStage;
+                    const isCompleted = !!this.state.completed[stage.id];
+                    const score = this.state.scores[stage.id] !== undefined ? this.state.scores[stage.id] : 0;
+                    const maxScoreThisStage = stage.qCount;
+
+                    const card = document.createElement('div');
+                    card.className = `relative rounded-2xl p-4 border transition-all duration-200 flex flex-col justify-between ${
+                        isUnlocked 
+                        ? (stage.id === 12 
+                            ? 'bg-gradient-to-br from-rose-950/80 via-slate-900 to-amber-950/80 border-rose-500 hover:border-amber-400 shadow-xl shadow-rose-950/40 cursor-pointer transform hover:-translate-y-1' 
+                            : 'bg-slate-900/90 border-slate-700 hover:border-emerald-500 shadow-lg cursor-pointer transform hover:-translate-y-1')
+                        : 'bg-slate-950/60 border-slate-800 opacity-50 pointer-events-none'
+                    }`;
+
+                    let badgeHtml = '';
+                    if (isCompleted) {
+                        badgeHtml = `<span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-500/40 font-semibold">✓ ผ่านแล้ว (${score}/${maxScoreThisStage})</span>`;
+                    } else if (isUnlocked) {
+                        badgeHtml = `<span class="text-[10px] px-2 py-0.5 rounded-full ${stage.id === 12 ? 'bg-rose-900/80 text-rose-300 border border-rose-500 animate-pulse' : 'bg-slate-800 text-cyan-300 border border-cyan-500/40'} font-semibold">พร้อมท้าทาย</span>`;
+                    } else {
+                        badgeHtml = `<span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-500 border border-slate-700">🔒 ล็อก</span>`;
+                    }
+
+                    card.innerHTML = `
+                        <div>
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-[11px] font-bold ${stage.id === 12 ? 'text-amber-400' : 'text-emerald-400'}">${stage.badge}</span>
+                                ${badgeHtml}
+                            </div>
+                            <h4 class="font-heading font-bold text-sm md:text-base text-white">${stage.id === 12 ? '👑 บอสใหญ่ ด่าน 12' : `ด่าน ${stage.id}`}: ${stage.title}</h4>
+                            <p class="text-xs text-slate-400 mt-1 mb-3"><b>บอส:</b> ${stage.boss}</p>
+                        </div>
+                        <div class="border-t border-slate-800/80 pt-2.5 flex justify-between items-center text-xs">
+                            <span class="text-slate-400">${stage.qCount} ข้อคิดวิเคราะห์</span>
+                            <span class="${stage.id === 12 ? 'text-amber-400 font-bold' : 'text-emerald-400 font-semibold'}">${isUnlocked ? 'เข้าสู่สนามประลอง ➔' : 'ต้องผ่านด่านก่อนหน้า'}</span>
+                        </div>
+                    `;
+
+                    if (isUnlocked) {
+                        card.onclick = () => this.startStage(stage.id);
+                    }
+                    grid.appendChild(card);
+                });
+            }
+
+            startStage(stageId) {
+                this.currentStageId = stageId;
+                this.currentQuestionIndex = 0;
+                this.playerHp = 100;
+                this.bossHp = 100;
+                this.currentStageCorrectCount = 0;
+
+                const stage = STAGES_DATA.find(s => s.id === stageId);
+                if (!stage) return;
+
+                soundManager.playAttack();
+
+                // Populate UI
+                document.getElementById('battle-stage-number').textContent = `ด่านที่ ${stage.id}: ${stage.badge}`;
+                document.getElementById('battle-stage-name').textContent = stage.title;
+                document.getElementById('battle-player-name').textContent = this.state.student ? this.state.student.name : "ผู้พิทักษ์";
+                document.getElementById('battle-boss-name').textContent = stage.boss;
+                document.getElementById('boss-svg-holder').innerHTML = stage.svg;
+                document.getElementById('q-total').textContent = stage.qCount;
+
+                this.updateBattleHpBars();
+                this.loadQuestion();
+                this.showScreen('screen-battle');
+            }
+
+            updateBattleHpBars() {
+                const playerPct = Math.max(0, this.playerHp);
+                const bossPct = Math.max(0, this.bossHp);
+
+                document.getElementById('player-hp-bar').style.width = `${playerPct}%`;
+                document.getElementById('player-hp-text').textContent = `${this.playerHp} / 100`;
+                if (playerPct <= 30) {
+                    document.getElementById('player-hp-bar').className = "bg-rose-500 h-full transition-all duration-500 ease-out";
+                } else {
+                    document.getElementById('player-hp-bar').className = "bg-emerald-500 h-full transition-all duration-500 ease-out";
+                }
+
+                document.getElementById('boss-hp-bar').style.width = `${bossPct}%`;
+                document.getElementById('boss-hp-text').textContent = `${this.bossHp} / 100`;
+            }
+
+            loadQuestion() {
+                const stage = STAGES_DATA.find(s => s.id === this.currentStageId);
+                const q = stage.questions[this.currentQuestionIndex];
+
+                document.getElementById('q-number').textContent = this.currentQuestionIndex + 1;
+                document.getElementById('q-concept-badge').textContent = `แนวคิด: ${q.concept}`;
+                document.getElementById('question-text').textContent = q.text;
+
+                // Hide explanation modal
+                document.getElementById('explanation-box').classList.add('hidden');
+
+                // Render options
+                const choicesContainer = document.getElementById('choices-grid');
+                choicesContainer.innerHTML = '';
+
+                q.options.forEach((optText, idx) => {
+                    const btn = document.createElement('button');
+                    btn.className = "w-full text-left p-3.5 rounded-xl bg-slate-800/90 hover:bg-slate-700 border border-slate-700 hover:border-emerald-500 text-slate-200 text-xs md:text-sm font-medium transition duration-150 transform hover:-translate-y-0.5 active:translate-y-0 flex justify-between items-center shadow";
+                    btn.innerHTML = `<span>${optText}</span><span class="text-xs text-emerald-400 font-bold ml-2">⚔️</span>`;
+                    btn.onclick = () => this.handleAnswerChoice(idx);
+                    choicesContainer.appendChild(btn);
+                });
+            }
+
+            handleAnswerChoice(selectedIdx) {
+                // Disable choice buttons
+                const buttons = document.querySelectorAll('#choices-grid button');
+                buttons.forEach(b => b.disabled = true);
+
+                const stage = STAGES_DATA.find(s => s.id === this.currentStageId);
+                const q = stage.questions[this.currentQuestionIndex];
+                const isCorrect = (selectedIdx === q.ans);
+
+                const floatDamage = document.getElementById('float-damage');
+                const bossBox = document.getElementById('boss-avatar-box');
+                const playerBox = document.getElementById('player-avatar-box');
+
+                if (isCorrect) {
+                    // Correct answer
+                    this.currentStageCorrectCount++;
+                    soundManager.playAttack();
+
+                    this.bossHp = Math.max(0, this.bossHp - stage.bossDmg);
+                    bossBox.classList.add('animate-shake');
+
+                    floatDamage.textContent = `-${stage.bossDmg} HP! บอสโดนโจมตี 💥`;
+                    floatDamage.className = "absolute left-1/2 top-1/4 transform -translate-x-1/2 text-2xl font-heading font-black text-emerald-400 opacity-100 transition-all duration-500 z-20";
+
+                    setTimeout(() => {
+                        bossBox.classList.remove('animate-shake');
+                        floatDamage.classList.remove('opacity-100');
+                        floatDamage.classList.add('opacity-0');
+                    }, 800);
+
+                    this.showExplanation(true, q.exp);
+                } else {
+                    // Incorrect answer
+                    soundManager.playPlayerHurt();
+
+                    this.playerHp = Math.max(0, this.playerHp - stage.playerDmg);
+                    playerBox.classList.add('animate-shake');
+
+                    floatDamage.textContent = `ตอบผิด! คุณโดนโจมตี -${stage.playerDmg} HP ⚠️`;
+                    floatDamage.className = "absolute left-1/2 top-1/4 transform -translate-x-1/2 text-2xl font-heading font-black text-rose-500 opacity-100 transition-all duration-500 z-20";
+
+                    setTimeout(() => {
+                        playerBox.classList.remove('animate-shake');
+                        floatDamage.classList.remove('opacity-100');
+                        floatDamage.classList.add('opacity-0');
+                    }, 800);
+
+                    this.showExplanation(false, q.exp);
+                }
+
+                this.updateBattleHpBars();
+            }
+
+            showExplanation(isCorrect, explanationText) {
+                const expBox = document.getElementById('explanation-box');
+                const title = document.getElementById('explanation-title');
+                const content = document.getElementById('explanation-content');
+                const icon = document.getElementById('explanation-icon');
+
+                if (isCorrect) {
+                    expBox.className = "bg-emerald-950/90 border-2 border-emerald-500/50 rounded-2xl p-4 md:p-5 shadow-2xl transition-all duration-300";
+                    title.textContent = "วิเคราะห์ถูกต้องแม่นยำ! (+1 คะแนน)";
+                    title.className = "font-heading font-bold text-sm md:text-base text-emerald-300";
+                    icon.textContent = "✨";
+                } else {
+                    expBox.className = "bg-rose-950/90 border-2 border-rose-500/50 rounded-2xl p-4 md:p-5 shadow-2xl transition-all duration-300";
+                    title.textContent = "ยังไม่ถูกต้อง! เรียนรู้แนวคิดเพื่อพัฒนา";
+                    title.className = "font-heading font-bold text-sm md:text-base text-rose-300";
+                    icon.textContent = "⚠️";
+                }
+
+                content.textContent = explanationText;
+                expBox.classList.remove('hidden');
+            }
+
+            proceedNextTurn() {
+                // Check if Player HP is zero
+                if (this.playerHp <= 0) {
+                    soundManager.playPlayerHurt();
+                    this.showScreen('screen-gameover');
+                    return;
+                }
+
+                const stage = STAGES_DATA.find(s => s.id === this.currentStageId);
+
+                // If questions remain in this stage
+                if (this.currentQuestionIndex < stage.qCount - 1) {
+                    this.currentQuestionIndex++;
+                    this.loadQuestion();
+                } else {
+                    // All questions in this stage finished and player survived!
+                    this.finishStage();
+                }
+            }
+
+            finishStage() {
+                soundManager.playVictory();
+
+                // Save score for this stage (keep max score if re-played)
+                const prevScore = this.state.scores[this.currentStageId] || 0;
+                this.state.scores[this.currentStageId] = Math.max(prevScore, this.currentStageCorrectCount);
+                this.state.completed[this.currentStageId] = true;
+
+                // Unlock next stage if currently at the latest unlocked
+                if (this.currentStageId === this.state.unlockedStage && this.state.unlockedStage < 12) {
+                    this.state.unlockedStage++;
+                }
+
+                this.saveState();
+
+                // Show cleared screen
+                const stage = STAGES_DATA.find(s => s.id === this.currentStageId);
+                document.getElementById('cleared-title').textContent = `พิชิตด่านที่ ${stage.id}: ${stage.title}`;
+                document.getElementById('cleared-score-display').textContent = `${this.currentStageCorrectCount} / ${stage.qCount} ข้อ`;
+                document.getElementById('cleared-status-text').textContent = stage.id === 12 ? 'สำเร็จครบ 12 ด่านแล้ว!' : 'ปลดล็อกด่านต่อไป';
+
+                this.showScreen('screen-cleared');
+            }
+
+            restartCurrentStage() {
+                this.startStage(this.currentStageId);
+            }
+
+            returnToMap() {
+                this.showStageMap();
+            }
+
+            // Certificate Evaluation Logic
+            checkCertificateEligibility() {
+                // Check if all 12 stages completed
+                let completedCount = 0;
+                for (let i = 1; i <= 12; i++) {
+                    if (this.state.completed[i]) completedCount++;
+                }
+
+                if (completedCount < 12) {
+                    document.getElementById('failed-criteria-text').textContent = `คุณยังพิชิตไม่ครบทั้ง 12 ด่าน (ปัจจุบันผ่านแล้ว ${completedCount}/12 ด่าน) กรุณาผ่านด่านให้ครบทุกด่านเพื่อเข้ารับการประเมินเกียรติบัตร`;
+                    this.showScreen('screen-failed-criteria');
+                    return;
+                }
+
+                const totalScore = this.getTotalScore(); // out of 65
+                const percentage = (totalScore / 65) * 100;
+
+                // Condition: If less than 60%, DO NOT issue certificate. Show retry modal.
+                if (percentage < 60) {
+                    document.getElementById('failed-criteria-text').innerHTML = `
+                        คะแนนรวมของคุณคือ <b>${totalScore} / 65 ข้อ (${percentage.toFixed(1)}%)</b> ซึ่ง<b>ต่ำกว่า 60%</b><br>
+                        จึงยัง<b>ไม่ผ่านเกณฑ์</b>และไม่ได้รับเกียรติบัตร กรุณากลับไปเลือกเล่นด่านที่ได้คะแนนน้อยใหม่อีกครั้งเพื่อสะสมคะแนนให้ผ่านเกณฑ์
+                    `;
+                    this.showScreen('screen-failed-criteria');
+                    return;
+                }
+
+                // Passed! Determine rank:
+                // > 80% => The finest
+                // > 70% => Excellent
+                // > 60% => Good
+                let gradeTitle = "";
+                let gradeClass = "";
+                if (percentage >= 80) {
+                    gradeTitle = "The finest";
+                    gradeClass = "font-heading font-black text-xl md:text-2xl text-amber-600";
+                } else if (percentage >= 70) {
+                    gradeTitle = "Excellent";
+                    gradeClass = "font-heading font-black text-xl md:text-2xl text-emerald-700";
+                } else {
+                    gradeTitle = "Good";
+                    gradeClass = "font-heading font-black text-xl md:text-2xl text-cyan-700";
+                }
+
+                // Render Certificate
+                document.getElementById('cert-student-name').textContent = this.state.student.name;
+                document.getElementById('cert-student-meta').textContent = `ชั้นมัธยมศึกษาปีที่ ${this.state.student.classRoom} • เลขที่ ${this.state.student.no}`;
+                
+                const gradeEl = document.getElementById('cert-grade-level');
+                gradeEl.textContent = gradeTitle;
+                gradeEl.className = gradeClass;
+
+                document.getElementById('cert-percentage-text').textContent = `คะแนนสะสมรวม: ${totalScore} / 65 ข้อ (${percentage.toFixed(1)}%)`;
+
+                const today = new Date();
+                const thaiMonths = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
+                const dateStr = `${today.getDate()} ${thaiMonths[today.getMonth()]} ${today.getFullYear() + 543}`;
+                document.getElementById('cert-date').textContent = dateStr;
+
+                soundManager.playVictory();
+                this.showScreen('screen-certificate');
+            }
+
+            confirmReset() {
+                document.getElementById('confirm-modal').classList.remove('hidden');
+            }
+
+            closeConfirmModal() {
+                document.getElementById('confirm-modal').classList.add('hidden');
+            }
+
+            executeReset() {
+                localStorage.removeItem(STORAGE_KEY);
+                this.state = this.loadState();
+                this.closeConfirmModal();
+                this.showScreen('screen-auth');
+            }
+        }
+
+        // Initialize App on DOM Ready
+        let app;
+        window.addEventListener('DOMContentLoaded', () => {
+            app = new EcosystemApp();
+            app.init();
+        });
+    </script>
+</body>
+</html>
