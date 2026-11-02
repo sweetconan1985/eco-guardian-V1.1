@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eco-Guardian: ภารกิจ 12 ผู้พิทักษ์ระบบนิเวศ ม.3 (สสวท.)</title>
+    <title>Eco-Guardian: 12 ผู้พิทักษ์ระบบนิเวศ ม.3 (สสวท.)</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Prompt & Kanit -->
@@ -128,13 +128,20 @@
                 </div>
             </div>
 
-            <div class="flex items-center space-x-2 md:space-x-4">
+            <div class="flex items-center space-x-2 md:space-x-3">
+                <!-- Sync Status Pill -->
+                <div id="cloud-sync-status" class="hidden items-center bg-slate-800/90 border border-slate-700 px-2.5 py-1 rounded-xl text-[11px] text-slate-300">
+                    <span id="sync-icon" class="mr-1">☁️</span>
+                    <span id="sync-text">คลาวด์พร้อม</span>
+                </div>
+
                 <!-- Sound Toggle -->
                 <button id="sound-btn" onclick="soundManager.toggleSound()" class="p-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs md:text-sm flex items-center transition">
                     <span id="sound-icon" class="mr-1">🔊</span>
                     <span id="sound-text" class="hidden sm:inline">เสียงเปิด</span>
                 </button>
-                <!-- Player Profile Indicator -->
+
+                <!-- Player Profile Pill -->
                 <div id="nav-player-pill" class="hidden items-center bg-slate-800/90 border border-emerald-500/30 px-3 py-1 rounded-xl text-xs">
                     <span class="text-emerald-400 font-semibold mr-2" id="nav-player-name">ผู้พิทักษ์</span>
                     <span class="bg-emerald-950 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-500/30 font-bold" id="nav-score">0 / 65</span>
@@ -146,43 +153,73 @@
     <!-- Main Dynamic Content Area -->
     <main class="flex-grow flex items-center justify-center p-3 md:p-6 w-full max-w-5xl mx-auto">
         
-        <!-- SCREEN 1: REGISTRATION / WELCOME -->
-        <section id="screen-auth" class="w-full max-w-xl bg-slate-900/90 backdrop-blur-xl border border-slate-700/80 rounded-3xl p-6 md:p-10 shadow-2xl relative text-center">
+        <!-- SCREEN 1: ONLINE LOGIN (BY STUDENT ID) -->
+        <section id="screen-login" class="w-full max-w-md bg-slate-900/90 backdrop-blur-xl border border-slate-700/80 rounded-3xl p-6 md:p-8 shadow-2xl relative text-center">
             <div class="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-4 animate-bounce-subtle">
-                <span>🛡️ แพลตฟอร์มการเรียนรู้ Active Learning วิทยาศาสตร์ ม.3</span>
+                <span>☁️ เชื่อมต่อระบบคลาวด์อัตโนมัติ</span>
             </div>
 
-            <h2 class="font-heading text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 mb-2 text-glow">
-                ภารกิจ 12 ผู้พิทักษ์ระบบนิเวศ
+            <h2 class="font-heading text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 mb-2 text-glow">
+                เข้าสู่ระบบผู้พิทักษ์
             </h2>
             <p class="text-slate-300 text-xs md:text-sm mb-6 leading-relaxed">
-                ตะลุย 12 ด่านการเรียนรู้ระบบนิเวศตามหลักสูตร สสวท. (ด่าน 1-11 ละ 5 ข้อ และด่าน 12 บอสใหญ่ 10 ข้อ รวม 65 ข้อ) บันทึกความคืบหน้าอัตโนมัติ เพื่อสะสมคะแนนรับเกียรติบัตรระดับ The finest, Excellent หรือ Good
+                กรอก <b>รหัสประจำตัวนักเรียน</b> เพื่อดึงข้อมูลเดิมจากฐานข้อมูลออนไลน์ หรือเริ่มต้นลงทะเบียนผู้เล่นใหม่
             </p>
 
-            <!-- Registration Form -->
-            <form id="auth-form" onsubmit="app.handleRegister(event)" class="space-y-4 text-left">
+            <form id="login-form" onsubmit="app.handleLoginSubmit(event)" class="space-y-4 text-left">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1 ml-1">ชื่อ - นามสกุล นักเรียน *</label>
-                    <input type="text" id="input-name" required placeholder="เช่น เด็กชายพิทักษ์ สิ่งแวดล้อม"
+                    <label class="block text-xs font-semibold text-slate-300 mb-1 ml-1">รหัสประจำตัวนักเรียน *</label>
+                    <input type="text" id="input-student-id" required placeholder="เช่น 55432 หรือ เลขประจำตัว 5 หลัก"
+                        class="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-600 focus:border-emerald-400 text-white placeholder-slate-500 text-sm outline-none transition text-center font-bold tracking-wider">
+                </div>
+
+                <button type="submit" id="login-btn" class="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-heading font-extrabold text-base shadow-xl shadow-emerald-500/25 transition duration-150 transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center space-x-2">
+                    <span id="login-btn-spinner" class="hidden animate-spin">⏳</span>
+                    <span id="login-btn-text">🚀 ตรวจสอบและเข้าสู่ระบบ</span>
+                </button>
+            </form>
+
+            <div id="login-status-msg" class="mt-4 text-xs font-medium text-slate-400 min-h-[20px]"></div>
+        </section>
+
+        <!-- SCREEN 1.5: NEW PLAYER REGISTRATION MODAL (Only when Student ID not found) -->
+        <section id="screen-register" class="hidden w-full max-w-lg bg-slate-900/95 backdrop-blur-xl border border-emerald-500/50 rounded-3xl p-6 md:p-8 shadow-2xl relative text-center">
+            <div class="w-12 h-12 mx-auto rounded-2xl bg-emerald-950 border border-emerald-400/50 flex items-center justify-center text-2xl mb-2">
+                🌱
+            </div>
+            <h3 class="font-heading font-extrabold text-xl md:text-2xl text-white">ลงทะเบียนผู้พิทักษ์คนใหม่</h3>
+            <p class="text-xs text-slate-300 mt-1 mb-5">
+                รหัสนักเรียน: <span id="register-id-display" class="font-bold text-emerald-400"></span> (กรอกข้อมูลเพียงครั้งเดียว)
+            </p>
+
+            <form id="register-form" onsubmit="app.handleNewPlayerRegister(event)" class="space-y-4 text-left">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1 ml-1">ชื่อ - นามสกุล (สำหรับออกเกียรติบัตร) *</label>
+                    <input type="text" id="reg-name" required placeholder="เช่น เด็กชายพิทักษ์ สิ่งแวดล้อม"
                         class="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-600 focus:border-emerald-400 text-white placeholder-slate-500 text-sm outline-none transition">
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1 ml-1">ระดับชั้น / ห้อง *</label>
-                        <input type="text" id="input-class" required placeholder="เช่น ม.3/1"
+                        <label class="block text-xs font-semibold text-slate-300 mb-1 ml-1">ชั้น / ห้อง *</label>
+                        <input type="text" id="reg-room" required placeholder="เช่น ม.3/1"
                             class="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-600 focus:border-emerald-400 text-white placeholder-slate-500 text-sm outline-none transition">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-300 mb-1 ml-1">เลขที่ *</label>
-                        <input type="number" id="input-no" required min="1" max="99" placeholder="เช่น 15"
+                        <input type="number" id="reg-no" required min="1" max="99" placeholder="เช่น 12"
                             class="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-600 focus:border-emerald-400 text-white placeholder-slate-500 text-sm outline-none transition">
                     </div>
                 </div>
 
-                <button type="submit" class="w-full mt-2 py-3.5 px-6 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-heading font-extrabold text-base shadow-xl shadow-emerald-500/25 transition duration-150 transform hover:-translate-y-0.5 active:translate-y-0">
-                    🎮 เริ่มต้นผจญภัย / ดำเนินการต่อ
-                </button>
+                <div class="flex space-x-2 pt-2">
+                    <button type="submit" id="register-submit-btn" class="flex-1 py-3 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-heading font-bold text-sm shadow-lg transition">
+                        บันทึกและเริ่มเล่น
+                    </button>
+                    <button type="button" onclick="app.cancelRegister()" class="px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs">
+                        ย้อนกลับ
+                    </button>
+                </div>
             </form>
         </section>
 
@@ -191,12 +228,14 @@
             <!-- Student Header Banner -->
             <div class="bg-slate-900/90 border border-slate-700/80 rounded-2xl p-4 md:p-5 flex flex-wrap items-center justify-between gap-4 shadow-xl">
                 <div>
-                    <span class="text-xs uppercase tracking-wider text-emerald-400 font-bold">แฟ้มประวัติผู้พิทักษ์ระบบนิเวศ</span>
+                    <span class="text-xs uppercase tracking-wider text-emerald-400 font-bold">แฟ้มประวัติผู้พิทักษ์ระบบนิเวศ (บันทึกอัตโนมัติบนคลาวด์)</span>
                     <h2 class="font-heading font-black text-xl md:text-2xl text-white">
                         <span id="map-player-display">นักเรียน</span> 
                         <span class="text-xs font-normal text-slate-400" id="map-meta-display">(ม.3/1 เลขที่ 1)</span>
                     </h2>
-                    <p class="text-xs text-slate-400 mt-0.5">เล่นวันละ 1 ด่าน หรือท้าทายเพื่อปรับปรุงคะแนนให้ถึงเกณฑ์รับเกียรติบัตร</p>
+                    <p class="text-xs text-slate-400 mt-0.5">
+                        รหัส: <span id="map-id-display" class="text-emerald-300 font-mono font-bold"></span> • เล่นวันละ 1 ด่าน หรือท้าทายซ้ำเพื่อปรับปรุงคะแนน
+                    </p>
                 </div>
 
                 <div class="flex items-center space-x-3">
@@ -204,9 +243,9 @@
                         <div class="text-[10px] text-slate-400 uppercase font-semibold">คะแนนสะสมรวม</div>
                         <div class="font-heading font-extrabold text-lg text-emerald-300" id="map-total-score">0 / 65</div>
                     </div>
-                    <!-- Reset Progress Button -->
-                    <button onclick="app.confirmReset()" class="p-2.5 rounded-xl bg-rose-950/40 border border-rose-800 hover:bg-rose-900/60 text-rose-300 text-xs transition" title="ล้างข้อมูลเริ่มใหม่ทั้งหมด">
-                        🔄 เปลี่ยนผู้เล่น
+                    <!-- Switch Player Button -->
+                    <button onclick="app.logout()" class="p-2.5 rounded-xl bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-300 text-xs transition" title="สลับรหัสนักเรียน">
+                        🔄 สลับผู้เล่น
                     </button>
                 </div>
             </div>
@@ -217,7 +256,7 @@
                     <span class="text-3xl">📜</span>
                     <div>
                         <h3 class="font-heading font-bold text-sm md:text-base text-amber-200">ระบบประเมินผลสัมฤทธิ์และเกียรติบัตร (รวม 65 ข้อ)</h3>
-                        <p class="text-xs text-slate-300">เกณฑ์: &gt;=80% (The finest) | &gt;=70% (Excellent) | &gt;=60% (Good) | &lt;60% (ไม่ผ่านเกณฑ์)</p>
+                        <p class="text-xs text-slate-300">เกณฑ์: &ge;80% (The finest) | &ge;70% (Excellent) | &ge;60% (Good) | &lt;60% (ไม่ผ่านเกณฑ์)</p>
                     </div>
                 </div>
                 <button id="view-cert-btn" onclick="app.checkCertificateEligibility()" class="w-full sm:w-auto px-5 py-2.5 rounded-xl font-heading font-bold text-xs md:text-sm bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-lg shadow-amber-500/20 transition whitespace-nowrap">
@@ -355,8 +394,8 @@
                 </div>
                 <div class="border-r border-slate-700"></div>
                 <div>
-                    <span class="text-[10px] text-slate-400 block font-semibold">สถานะ</span>
-                    <span class="font-heading font-extrabold text-base text-cyan-300" id="cleared-status-text">ปลดล็อกด่านต่อไป</span>
+                    <span class="text-[10px] text-slate-400 block font-semibold">สถานะคลาวด์</span>
+                    <span class="font-heading font-extrabold text-base text-cyan-300">☁️ บันทึกแล้ว</span>
                 </div>
             </div>
 
@@ -442,7 +481,7 @@
                         <h2 id="cert-student-name" class="font-heading font-extrabold text-2xl md:text-3xl text-emerald-900 underline decoration-amber-500 decoration-2 underline-offset-8 mt-1">
                             เด็กหญิง / เด็กชาย ผู้พิทักษ์
                         </h2>
-                        <p id="cert-student-meta" class="text-xs font-semibold text-slate-600 mt-2">ชั้นมัธยมศึกษาปีที่ 3/1 • เลขที่ 1</p>
+                        <p id="cert-student-meta" class="text-xs font-semibold text-slate-600 mt-2">ชั้นมัธยมศึกษาปีที่ 3/1 • เลขที่ 1 (รหัสนักเรียน: 00000)</p>
                     </div>
 
                     <p class="text-xs text-slate-700 max-w-xl mx-auto leading-relaxed">
@@ -475,7 +514,7 @@
 
                         <div class="text-right">
                             <span class="text-[10px] text-slate-500 block">ผู้ประเมิน:</span>
-                            <span class="font-heading font-semibold text-xs text-slate-800">ระบบ AI วิทยาศาสตร์ สสวท.</span>
+                            <span class="font-heading font-semibold text-xs text-slate-800">ระบบคลาวด์วิทยาศาสตร์ สสวท.</span>
                             <span class="text-[9px] text-emerald-700 block">Ecosystem Guardian Academy</span>
                         </div>
                     </div>
@@ -496,28 +535,21 @@
 
     </main>
 
-    <!-- Custom Modal for Confirmation -->
-    <div id="confirm-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 max-w-sm w-full text-center space-y-4">
-            <span class="text-3xl">⚠️</span>
-            <h4 class="font-heading font-bold text-lg text-white">ยืนยันการเปลี่ยนผู้เล่น / ล้างข้อมูล?</h4>
-            <p class="text-xs text-slate-300">คะแนนและความคืบหน้าทั้ง 12 ด่านจะถูกรีเซ็ตเป็นศูนย์ และต้องลงทะเบียนใหม่</p>
-            <div class="flex space-x-2 pt-2">
-                <button onclick="app.executeReset()" class="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs">ยืนยัน ล้างข้อมูล</button>
-                <button onclick="app.closeConfirmModal()" class="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs">ยกเลิก</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Footer -->
     <footer class="w-full bg-slate-950/80 border-t border-slate-800/80 py-2.5 text-center text-[11px] text-slate-500 no-print">
-        Ecosystem Master: สื่อเกมการเรียนรู้วิทยาศาสตร์ ม.3 ตามหลักสูตรแกนกลาง สสวท. (12 ด่าน รวม 65 ข้อคิดวิเคราะห์)
+        Ecosystem Master: สื่อเกมการเรียนรู้วิทยาศาสตร์ ม.3 เชื่อมต่อคลาวด์ Google Sheets อัตโนมัติ (12 ด่าน รวม 65 ข้อคิดวิเคราะห์)
     </footer>
 
     <!-- JAVASCRIPT GAME LOGIC & 65 QUESTIONS -->
     <script>
         /* ==========================================================================
-           1. WEB AUDIO API SYNTHESIZER ENGINE (Pure JS, Zero External Files)
+           1. GOOGLE APPS SCRIPT WEB APP INTEGRATION (CLOUD AUTO-SAVE)
+           ========================================================================== */
+        const GAS_API_URL = "https://script.google.com/macros/s/AKfycby9GmPaipA6hI3NUUdExtpUQ-x-uocaj0SxOveio3Zd_hXccJceIC0Naynp33ExjHgI/exec";
+        const LOCAL_STORAGE_KEY = "ECO_GUARDIAN_LOCAL_CACHE";
+
+        /* ==========================================================================
+           2. WEB AUDIO API SYNTHESIZER ENGINE (Pure JS, Zero External Files)
            ========================================================================== */
         class SoundEngine {
             constructor() {
@@ -590,7 +622,7 @@
         const soundManager = new SoundEngine();
 
         /* ==========================================================================
-           2. 12 CURRICULUM STAGES (STAGES 1-11: 5 QUESTIONS EACH, STAGE 12: 10 QUESTIONS)
+           3. 12 CURRICULUM STAGES (STAGES 1-11: 5 QUESTIONS EACH, STAGE 12: 10 QUESTIONS)
            TOTAL = 65 QUESTIONS
            ========================================================================== */
         const STAGES_DATA = [
@@ -1392,8 +1424,8 @@
                 boss: "ไคจูมหาวิบัติแอนโทรโปซีน (Anthropocene Leviathan)",
                 badge: "ว 1.1 ม.3/5 - ม.3/6 (บอสใหญ่ 10 ข้อ)",
                 qCount: 10,
-                bossDmg: 10, // 10 correct answers = 100 boss HP
-                playerDmg: 15, // wrong answer penalties
+                bossDmg: 10,
+                playerDmg: 15,
                 svg: `<svg viewBox="0 0 100 100" class="w-full h-full"><polygon points="50,5 92,30 82,85 50,98 18,85 8,30" fill="#450a0a" stroke="#dc2626" stroke-width="3.5"/><circle cx="50" cy="55" r="16" fill="#7f1d1d" stroke="#ef4444" stroke-width="2"/><circle cx="50" cy="55" r="7" fill="#facc15" class="animate-ping"/><polygon points="35,36 44,40 35,44" fill="#fef08a"/><polygon points="65,36 56,40 65,44" fill="#fef08a"/><path d="M25,82 Q50,70 75,82" stroke="#f87171" stroke-width="3" fill="none"/></svg>`,
                 questions: [
                     {
@@ -1521,57 +1553,52 @@
         ];
 
         /* ==========================================================================
-           3. APPLICATION CORE LOGIC (STATE & LOCAL STORAGE)
+           4. APPLICATION CORE LOGIC (CLOUD SYNC & GAME ENGINE)
            ========================================================================== */
-        const STORAGE_KEY = "ECO_GUARDIAN_M3_12STAGES_DATA";
-
         class EcosystemApp {
             constructor() {
-                this.state = this.loadState();
+                this.studentId = "";
+                this.student = null; // { name, room, no }
+                this.unlockedStage = 1;
+                this.stageScores = {}; // { 1: 5, ..., 12: 10 }
+                
+                // Combat Session State
                 this.currentStageId = 1;
                 this.currentQuestionIndex = 0;
                 this.playerHp = 100;
                 this.bossHp = 100;
                 this.currentStageCorrectCount = 0;
-            }
-
-            // Load saved state or set defaults
-            loadState() {
-                const defaultState = {
-                    student: null, // { name: "", classRoom: "", no: "" }
-                    unlockedStage: 1, // 1 to 12
-                    scores: {}, // { 1: 5, ..., 12: 10 }
-                    completed: {} // { 1: true, ... }
-                };
-                try {
-                    const raw = localStorage.getItem(STORAGE_KEY);
-                    if (raw) {
-                        return Object.assign(defaultState, JSON.parse(raw));
-                    }
-                } catch (e) {
-                    console.error("Storage load error", e);
-                }
-                return defaultState;
-            }
-
-            saveState() {
-                try {
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state));
-                } catch (e) {
-                    console.error("Storage save error", e);
-                }
+                this.pendingStudentId = "";
             }
 
             init() {
-                if (this.state.student && this.state.student.name) {
-                    this.showStageMap();
-                } else {
-                    this.showScreen('screen-auth');
+                // Check if there is cached data in localStorage
+                try {
+                    const cached = localStorage.getItem(LOCAL_STORAGE_KEY);
+                    if (cached) {
+                        const parsed = JSON.parse(cached);
+                        if (parsed.studentId && parsed.student) {
+                            this.studentId = parsed.studentId;
+                            this.student = parsed.student;
+                            this.unlockedStage = parsed.unlockedStage || 1;
+                            this.stageScores = parsed.stageScores || {};
+                            this.showStageMap();
+                            this.syncOnlineSilently();
+                            return;
+                        }
+                    }
+                } catch (e) {
+                    console.warn(e);
                 }
+                this.showScreen('screen-login');
             }
 
             showScreen(screenId) {
-                const screens = ['screen-auth', 'screen-map', 'screen-battle', 'screen-cleared', 'screen-gameover', 'screen-failed-criteria', 'screen-certificate'];
+                const screens = [
+                    'screen-login', 'screen-register', 'screen-map',
+                    'screen-battle', 'screen-cleared', 'screen-gameover',
+                    'screen-failed-criteria', 'screen-certificate'
+                ];
                 screens.forEach(id => {
                     const el = document.getElementById(id);
                     if (el) el.classList.add('hidden');
@@ -1582,46 +1609,200 @@
                 this.updateNavProfile();
             }
 
-            handleRegister(e) {
-                e.preventDefault();
-                const name = document.getElementById('input-name').value.trim();
-                const classRoom = document.getElementById('input-class').value.trim();
-                const no = document.getElementById('input-no').value.trim();
+            setSyncStatus(status, text) {
+                const statusPill = document.getElementById('cloud-sync-status');
+                const icon = document.getElementById('sync-icon');
+                const textEl = document.getElementById('sync-text');
+                statusPill.classList.remove('hidden');
+                statusPill.classList.add('flex');
 
-                if (!name) return;
-
-                this.state.student = { name, classRoom, no };
-                this.saveState();
-                soundManager.playVictory();
-                this.showStageMap();
+                if (status === 'syncing') {
+                    icon.textContent = '🔄';
+                    textEl.textContent = text || 'กำลังซิงค์...';
+                    statusPill.className = "flex items-center bg-slate-800 border border-amber-500/50 px-2.5 py-1 rounded-xl text-[11px] text-amber-300 animate-pulse";
+                } else if (status === 'success') {
+                    icon.textContent = '☁️';
+                    textEl.textContent = text || 'ซิงค์คลาวด์แล้ว';
+                    statusPill.className = "flex items-center bg-slate-800 border border-emerald-500/50 px-2.5 py-1 rounded-xl text-[11px] text-emerald-300";
+                } else {
+                    icon.textContent = '💾';
+                    textEl.textContent = text || 'บันทึกในเครื่อง';
+                    statusPill.className = "flex items-center bg-slate-800 border border-slate-700 px-2.5 py-1 rounded-xl text-[11px] text-slate-400";
+                }
             }
 
-            updateNavProfile() {
-                const pill = document.getElementById('nav-player-pill');
-                if (this.state.student && this.state.student.name) {
-                    pill.classList.remove('hidden');
-                    pill.classList.add('flex');
-                    document.getElementById('nav-player-name').textContent = this.state.student.name;
-                    document.getElementById('nav-score').textContent = `${this.getTotalScore()} / 65`;
-                } else {
-                    pill.classList.add('hidden');
+            saveLocalCache() {
+                try {
+                    const data = {
+                        studentId: this.studentId,
+                        student: this.student,
+                        unlockedStage: this.unlockedStage,
+                        stageScores: this.stageScores
+                    };
+                    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
+                } catch (e) {
+                    console.error("Local storage error", e);
                 }
             }
 
             getTotalScore() {
                 let total = 0;
                 for (let i = 1; i <= 12; i++) {
-                    total += (this.state.scores[i] || 0);
+                    total += (this.stageScores[i] || 0);
                 }
                 return total;
             }
 
+            updateNavProfile() {
+                const pill = document.getElementById('nav-player-pill');
+                if (this.student && this.student.name) {
+                    pill.classList.remove('hidden');
+                    pill.classList.add('flex');
+                    document.getElementById('nav-player-name').textContent = this.student.name;
+                    document.getElementById('nav-score').textContent = `${this.getTotalScore()} / 65`;
+                } else {
+                    pill.classList.add('hidden');
+                }
+            }
+
+            /* ================= LOGIN & CLOUD DATA FETCH ================= */
+            async handleLoginSubmit(e) {
+                e.preventDefault();
+                const idInput = document.getElementById('input-student-id').value.trim();
+                if (!idInput) return;
+
+                const btn = document.getElementById('login-btn');
+                const spinner = document.getElementById('login-btn-spinner');
+                const btnText = document.getElementById('login-btn-text');
+                const statusMsg = document.getElementById('login-status-msg');
+
+                btn.disabled = true;
+                spinner.classList.remove('hidden');
+                btnText.textContent = "กำลังค้นหาข้อมูลบนคลาวด์...";
+                statusMsg.textContent = "กำลังเชื่อมต่อไปยัง Google Sheets...";
+
+                try {
+                    const fetchUrl = `${GAS_API_URL}?studentId=${encodeURIComponent(idInput)}`;
+                    const res = await fetch(fetchUrl, { method: 'GET', redirect: 'follow' });
+                    const result = await res.json();
+
+                    if (result && result.status === 'found') {
+                        // Existing player found!
+                        this.studentId = idInput;
+                        this.student = {
+                            name: result.name,
+                            room: result.room,
+                            no: result.no
+                        };
+                        this.unlockedStage = parseInt(result.unlockedStage) || 1;
+                        this.stageScores = result.stageScores || {};
+
+                        this.saveLocalCache();
+                        this.setSyncStatus('success', 'โหลดข้อมูลคลาวด์สำเร็จ');
+                        soundManager.playVictory();
+                        this.showStageMap();
+                    } else {
+                        // New player: prompt registration form
+                        this.pendingStudentId = idInput;
+                        document.getElementById('register-id-display').textContent = idInput;
+                        this.showScreen('screen-register');
+                    }
+                } catch (err) {
+                    console.warn("Cloud login fetch error:", err);
+                    // Check local cache if matching
+                    try {
+                        const cached = localStorage.getItem(LOCAL_STORAGE_KEY);
+                        if (cached) {
+                            const parsed = JSON.parse(cached);
+                            if (parsed.studentId === idInput && parsed.student) {
+                                this.studentId = parsed.studentId;
+                                this.student = parsed.student;
+                                this.unlockedStage = parsed.unlockedStage || 1;
+                                this.stageScores = parsed.stageScores || {};
+                                this.setSyncStatus('offline', 'ออฟไลน์ (ใช้ข้อมูลในเครื่อง)');
+                                soundManager.playVictory();
+                                this.showStageMap();
+                                return;
+                            }
+                        }
+                    } catch (ex) {}
+
+                    // Fallback to register if not in cache
+                    this.pendingStudentId = idInput;
+                    document.getElementById('register-id-display').textContent = idInput;
+                    statusMsg.textContent = "เชื่อมต่อคลาวด์ไม่สำเร็จ แต่สามารถเล่นและบันทึกในเครื่องได้";
+                    this.showScreen('screen-register');
+                } finally {
+                    btn.disabled = false;
+                    spinner.classList.add('hidden');
+                    btnText.textContent = "🚀 ตรวจสอบและเข้าสู่ระบบ";
+                }
+            }
+
+            cancelRegister() {
+                this.showScreen('screen-login');
+            }
+
+            async handleNewPlayerRegister(e) {
+                e.preventDefault();
+                const name = document.getElementById('reg-name').value.trim();
+                const room = document.getElementById('reg-room').value.trim();
+                const no = document.getElementById('reg-no').value.trim();
+
+                if (!name || !room || !no) return;
+
+                this.studentId = this.pendingStudentId;
+                this.student = { name, room, no };
+                this.unlockedStage = 1;
+                this.stageScores = {};
+
+                this.saveLocalCache();
+                soundManager.playVictory();
+                this.showStageMap();
+
+                // Sync new player to Google Sheets asynchronously
+                this.syncOnlineSilently();
+            }
+
+            async syncOnlineSilently() {
+                this.setSyncStatus('syncing', 'กำลังบันทึกคลาวด์...');
+                const payload = {
+                    studentId: this.studentId,
+                    name: this.student.name,
+                    room: this.student.room,
+                    no: this.student.no,
+                    unlockedStage: this.unlockedStage,
+                    stageScores: this.stageScores,
+                    totalScore: this.getTotalScore()
+                };
+
+                try {
+                    // Send text/plain to avoid CORS preflight failures on Google Apps Script
+                    await fetch(GAS_API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify(payload),
+                        redirect: 'follow'
+                    });
+                    this.setSyncStatus('success', 'บันทึกคลาวด์แล้ว');
+                } catch (err) {
+                    console.warn("Online sync error:", err);
+                    this.setSyncStatus('offline', 'บันทึกในเครื่องแล้ว');
+                }
+            }
+
+            logout() {
+                this.showScreen('screen-login');
+            }
+
+            /* ================= STAGE MAP VIEW ================= */
             showStageMap() {
                 this.showScreen('screen-map');
                 
                 // Update Student Banner Info
-                document.getElementById('map-player-display').textContent = this.state.student ? this.state.student.name : "ผู้พิทักษ์";
-                document.getElementById('map-meta-display').textContent = this.state.student ? `(ชั้น ${this.state.student.classRoom} • เลขที่ ${this.state.student.no})` : "";
+                document.getElementById('map-player-display').textContent = this.student ? this.student.name : "ผู้พิทักษ์";
+                document.getElementById('map-meta-display').textContent = this.student ? `(ชั้น ${this.student.room} • เลขที่ ${this.student.no})` : "";
+                document.getElementById('map-id-display').textContent = this.studentId;
                 document.getElementById('map-total-score').textContent = `${this.getTotalScore()} / 65`;
 
                 // Render Stage Cards
@@ -1629,9 +1810,9 @@
                 grid.innerHTML = '';
 
                 STAGES_DATA.forEach(stage => {
-                    const isUnlocked = stage.id <= this.state.unlockedStage;
-                    const isCompleted = !!this.state.completed[stage.id];
-                    const score = this.state.scores[stage.id] !== undefined ? this.state.scores[stage.id] : 0;
+                    const isUnlocked = stage.id <= this.unlockedStage;
+                    const isCompleted = this.stageScores[stage.id] !== undefined;
+                    const score = isCompleted ? this.stageScores[stage.id] : 0;
                     const maxScoreThisStage = stage.qCount;
 
                     const card = document.createElement('div');
@@ -1674,6 +1855,7 @@
                 });
             }
 
+            /* ================= BATTLE SESSION ================= */
             startStage(stageId) {
                 this.currentStageId = stageId;
                 this.currentQuestionIndex = 0;
@@ -1689,7 +1871,7 @@
                 // Populate UI
                 document.getElementById('battle-stage-number').textContent = `ด่านที่ ${stage.id}: ${stage.badge}`;
                 document.getElementById('battle-stage-name').textContent = stage.title;
-                document.getElementById('battle-player-name').textContent = this.state.student ? this.state.student.name : "ผู้พิทักษ์";
+                document.getElementById('battle-player-name').textContent = this.student ? this.student.name : "ผู้พิทักษ์";
                 document.getElementById('battle-boss-name').textContent = stage.boss;
                 document.getElementById('boss-svg-holder').innerHTML = stage.svg;
                 document.getElementById('q-total').textContent = stage.qCount;
@@ -1838,22 +2020,24 @@
                 soundManager.playVictory();
 
                 // Save score for this stage (keep max score if re-played)
-                const prevScore = this.state.scores[this.currentStageId] || 0;
-                this.state.scores[this.currentStageId] = Math.max(prevScore, this.currentStageCorrectCount);
-                this.state.completed[this.currentStageId] = true;
+                const prevScore = this.stageScores[this.currentStageId] || 0;
+                this.stageScores[this.currentStageId] = Math.max(prevScore, this.currentStageCorrectCount);
 
                 // Unlock next stage if currently at the latest unlocked
-                if (this.currentStageId === this.state.unlockedStage && this.state.unlockedStage < 12) {
-                    this.state.unlockedStage++;
+                if (this.currentStageId === this.unlockedStage && this.unlockedStage < 12) {
+                    this.unlockedStage++;
                 }
 
-                this.saveState();
+                // Save to local storage cache immediately
+                this.saveLocalCache();
+
+                // Auto-sync to Google Sheets Cloud asynchronously
+                this.syncOnlineSilently();
 
                 // Show cleared screen
                 const stage = STAGES_DATA.find(s => s.id === this.currentStageId);
                 document.getElementById('cleared-title').textContent = `พิชิตด่านที่ ${stage.id}: ${stage.title}`;
                 document.getElementById('cleared-score-display').textContent = `${this.currentStageCorrectCount} / ${stage.qCount} ข้อ`;
-                document.getElementById('cleared-status-text').textContent = stage.id === 12 ? 'สำเร็จครบ 12 ด่านแล้ว!' : 'ปลดล็อกด่านต่อไป';
 
                 this.showScreen('screen-cleared');
             }
@@ -1866,12 +2050,12 @@
                 this.showStageMap();
             }
 
-            // Certificate Evaluation Logic
+            /* ================= CERTIFICATE EVALUATION ================= */
             checkCertificateEligibility() {
                 // Check if all 12 stages completed
                 let completedCount = 0;
                 for (let i = 1; i <= 12; i++) {
-                    if (this.state.completed[i]) completedCount++;
+                    if (this.stageScores[i] !== undefined) completedCount++;
                 }
 
                 if (completedCount < 12) {
@@ -1894,25 +2078,25 @@
                 }
 
                 // Passed! Determine rank:
-                // > 80% => The finest
-                // > 70% => Excellent
-                // > 60% => Good
+                // >= 80% => The finest
+                // >= 70% => Excellent
+                // >= 60% => Good
                 let gradeTitle = "";
                 let gradeClass = "";
                 if (percentage >= 80) {
-                    gradeTitle = "The finest";
+                    gradeTitle = "The finest (ดีเลิศ)";
                     gradeClass = "font-heading font-black text-xl md:text-2xl text-amber-600";
                 } else if (percentage >= 70) {
-                    gradeTitle = "Excellent";
+                    gradeTitle = "Excellent (ดีเยี่ยม)";
                     gradeClass = "font-heading font-black text-xl md:text-2xl text-emerald-700";
                 } else {
-                    gradeTitle = "Good";
+                    gradeTitle = "Good (ดี)";
                     gradeClass = "font-heading font-black text-xl md:text-2xl text-cyan-700";
                 }
 
                 // Render Certificate
-                document.getElementById('cert-student-name').textContent = this.state.student.name;
-                document.getElementById('cert-student-meta').textContent = `ชั้นมัธยมศึกษาปีที่ ${this.state.student.classRoom} • เลขที่ ${this.state.student.no}`;
+                document.getElementById('cert-student-name').textContent = this.student.name;
+                document.getElementById('cert-student-meta').textContent = `ชั้นมัธยมศึกษาปีที่ ${this.student.room} • เลขที่ ${this.student.no} (รหัสประจำตัว: ${this.studentId})`;
                 
                 const gradeEl = document.getElementById('cert-grade-level');
                 gradeEl.textContent = gradeTitle;
@@ -1927,21 +2111,6 @@
 
                 soundManager.playVictory();
                 this.showScreen('screen-certificate');
-            }
-
-            confirmReset() {
-                document.getElementById('confirm-modal').classList.remove('hidden');
-            }
-
-            closeConfirmModal() {
-                document.getElementById('confirm-modal').classList.add('hidden');
-            }
-
-            executeReset() {
-                localStorage.removeItem(STORAGE_KEY);
-                this.state = this.loadState();
-                this.closeConfirmModal();
-                this.showScreen('screen-auth');
             }
         }
 
